@@ -1,3 +1,4 @@
+require "clean"
 -- build tools stuff
 if os.ishost("windows") then
 	build_tools_path 	= path.getabsolute("build-tools")
