@@ -13,6 +13,8 @@ namespace immagine
 	Image
 	image_new(uint32_t width, uint32_t height, uint32_t depth)
 	{
+		assert(depth != 0 && "Unsupported image format");
+
 		Image self{};
 
 		self.width = width;
