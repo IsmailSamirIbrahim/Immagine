@@ -18,7 +18,7 @@ namespace immagine
 		self.width = width;
 		self.height = height;
 		self.depth = depth;
-		self.data =  (unsigned char*)::malloc(width * height * depth * sizeof(unsigned char));
+		self.data =  (Byte*)::malloc(width * height * depth * sizeof(Byte));
 
 		return self;
 	}
@@ -65,6 +65,8 @@ namespace immagine
 	Image
 	image_red_channel(const Image & image)
 	{
+		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
 		Image self = image_new(image.width, image.height, image.depth);
 
 		size_t size = image.width * image.height * image.depth;
@@ -81,6 +83,8 @@ namespace immagine
 	Image
 	image_green_channel(const Image & image)
 	{
+		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
 		Image self = image_new(image.width, image.height, image.depth);
 
 		size_t size = image.width * image.height * image.depth;
@@ -97,6 +101,8 @@ namespace immagine
 	Image
 	image_blue_channel(const Image & image)
 	{
+		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
 		Image self = image_new(image.width, image.height, image.depth);
 
 		size_t size = image.width * image.height * image.depth;
@@ -108,17 +114,6 @@ namespace immagine
 		}
 
 		return self;
-	}
-
-	inline static void
-	_image_histogram_dump(const char* file_path, float data[])
-	{
-		FILE *handle = fopen(file_path, "w");
-
-		for (size_t i = 0; i < 256; ++i)
-			fprintf(handle, "\n%f", data[i]);
-
-		fclose(handle);
 	}
 
 	void
@@ -135,6 +130,8 @@ namespace immagine
 	void
 	image_histogram_red_channel(const Image & image, float hist[])
 	{
+		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
 		size_t size = image.width * image.height * image.depth;
 		for (size_t i = 0; i < size; i += image.depth)
 			hist[image.data[i]] += 1;
@@ -146,6 +143,8 @@ namespace immagine
 	void
 	image_histogram_green_channel(const Image & image, float hist[])
 	{
+		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
 		size_t size = image.width * image.height * image.depth;
 		for (size_t i = 1; i < size; i += image.depth)
 			hist[image.data[i]] += 1;
@@ -157,6 +156,8 @@ namespace immagine
 	void
 	image_histogram_blue_channel(const Image & image, float hist[])
 	{
+		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
 		size_t size = image.width * image.height * image.depth;
 		for (size_t i = 2; i < size; i += image.depth)
 			hist[image.data[i]] += 1;
@@ -236,19 +237,6 @@ namespace immagine
 	}
 
 	inline static Image
-	_image_pad_1d(const Image& image, uint8_t expand, unsigned char value)
-	{
-		Image self = image_new(image.width + 2 * expand, 1, 0);
-
-		::memset(self.data, value, self.width);
-
-		for (int i = expand; i < self.width - expand; ++i)
-			self(i, 0, 0) = image(i - expand, 0, 0);
-
-		return self;
-	}
-
-	inline static Image
 	_image_pad_2d(const Image& image, uint8_t expand, unsigned char value)
 	{
 		Image self = image_new(image.width + 2 * expand, image.height + 2 * expand, 1);
@@ -257,7 +245,7 @@ namespace immagine
 
 		for (int j = expand; j < self.height - expand; ++j)
 			for (int i = expand; i < self.width - expand; ++i)
-				self(i, j, 0) = image(i - expand, j - expand, 0);
+				self(i, j) = image(i - expand, j - expand);
 
 		return self;
 	}
@@ -282,11 +270,8 @@ namespace immagine
 	{
 		switch (image.depth)
 		{
-		case 0:
-			return _image_pad_1d(image, expand, value);
 		case 1:
 			return _image_pad_2d(image, expand, value);
-		case 2:
 		case 3:
 		case 4:
 			return _image_pad_3d(image, expand, value);

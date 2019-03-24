@@ -1,6 +1,5 @@
 #pragma once
 #include <stdint.h>
-#include <stdio.h>
 #include <assert.h>
 
 #include "Immagine/Exports.h"
@@ -22,21 +21,6 @@ namespace immagine
 		uint32_t width;
 		uint32_t height;
 		uint32_t depth;
-
-		// operator overloading for 1D image
-		Byte&
-		operator()(size_t ix)
-		{
-			assert(ix >= 0 && ix < width && "ERROR: Index out of range.\n");
-			return data[ix];
-		}
-
-		const Byte&
-		operator()(size_t ix) const
-		{
-			assert(ix >= 0 && ix < width && "ERROR: Index out of range.\n");
-			return data[ix];
-		}
 
 		// operator overloading for 2D image
 		Byte&
