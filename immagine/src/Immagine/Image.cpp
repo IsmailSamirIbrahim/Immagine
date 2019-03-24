@@ -209,13 +209,18 @@ namespace immagine
 	}
 
 	Image
-	image_binarize(const Image & image, uint8_t threshold)
+	image_binarize(const Image & image)
 	{
 		assert(image.depth == 1 && "Image must be gray scale image\n");
 
 		Image self = image_new(image.width, image.height, image.depth);
-
 		size_t size = image.width * image.height * image.depth;
+
+		size_t sum = 0;
+		for (size_t i = 0; i < size; ++i)
+			sum += image.data[i];
+
+		uint8_t threshold = ((float)sum / (float)size + 0.5f);
 		for (size_t i = 0; i < size; ++i)
 			self.data[i] = (image.data[i] > threshold) ? 255 : 0;
 

@@ -103,7 +103,7 @@ namespace immagine
 	image_brightness(const Image& image, int16_t brightness);
 
 	API_IMMAGINE Image
-	image_binarize(const Image& image, uint8_t threshold);
+	image_binarize(const Image& image);
 
 	API_IMMAGINE Image
 	image_gray_scale(const Image& image);
