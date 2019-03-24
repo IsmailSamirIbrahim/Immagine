@@ -18,7 +18,7 @@ namespace immagine
 		self.width = width;
 		self.height = height;
 		self.depth = depth;
-		::malloc(width * height * depth * sizeof(unsigned char));
+		self.data =  (unsigned char*)::malloc(width * height * depth * sizeof(unsigned char));
 
 		return self;
 	}
@@ -278,7 +278,7 @@ namespace immagine
 	}
 
 	Image
-	image_padding(const Image& image, uint8_t expand, unsigned char value)
+	image_padding(const Image& image, uint8_t expand, Byte value)
 	{
 		switch (image.depth)
 		{

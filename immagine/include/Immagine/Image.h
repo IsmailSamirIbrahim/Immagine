@@ -6,6 +6,8 @@
 #include "Immagine/Exports.h"
 namespace immagine
 {
+	typedef unsigned char Byte;
+
 	enum IMAGE_KIND
 	{
 		NONE,
@@ -16,29 +18,56 @@ namespace immagine
 
 	struct Image
 	{
-		unsigned char *data;
+		Byte *data;
 		uint32_t width;
 		uint32_t height;
 		uint32_t depth;
 
-		unsigned char&
+		// operator overloading for 1D image
+		Byte&
+		operator()(size_t ix)
+		{
+			assert(ix >= 0 && ix < width && "ERROR: Index out of range.\n");
+			return data[ix];
+		}
+
+		const Byte&
+		operator()(size_t ix) const
+		{
+			assert(ix >= 0 && ix < width && "ERROR: Index out of range.\n");
+			return data[ix];
+		}
+
+		// operator overloading for 2D image
+		Byte&
+		operator()(size_t ix, size_t iy)
+		{
+			assert(ix >= 0 && ix < width && iy >= 0 && iy < height && "ERROR: Index out of range.\n");
+			size_t idx = ix + iy * width;
+			return data[idx];
+		}
+
+		const Byte&
+		operator()(size_t ix, size_t iy) const
+		{
+			assert(ix >= 0 && ix < width && iy >= 0 && iy < height && "ERROR: Index out of range.\n");
+			size_t idx = ix + iy * width;
+			return data[idx];
+		}
+
+		// operator overloading for 3D image
+		Byte&
 		operator()(size_t ix, size_t iy, size_t iz)
 		{
-			assert(ix >= 0 && ix < width  && "ERROR: Index out of range.\n");
-			assert(iy >= 0 && iy < height && "ERROR: Index out of range.\n");
-			assert(iz >= 0 && iz < depth  && "ERROR: Index out of range.\n");
-
+			assert(ix >= 0 && ix < width && iy >= 0 && iy < height && iz >= 0 && iz < depth && "ERROR: Index out of range.\n");
 			size_t idx = ix + iy * width + iz * width * height;
 			return data[idx];
 		}
 
-		const unsigned char&
+		const Byte&
 		operator()(size_t ix, size_t iy, size_t iz) const
 		{
-			assert(ix >= 0 && ix < width  && "ERROR: Index out of range.\n");
-			assert(iy >= 0 && iy < height && "ERROR: Index out of range.\n");
-			assert(iz >= 0 && iz < depth  && "ERROR: Index out of range.\n");
-
+			assert(ix >= 0 && ix < width && iy >= 0 && iy < height && iz >= 0 && iz < depth && "ERROR: Index out of range.\n");
 			size_t idx = ix + iy * width + iz * width * height;
 			return data[idx];
 		}
@@ -96,5 +125,5 @@ namespace immagine
 	image_gray_scale(const Image& image);
 
 	API_IMMAGINE Image
-	image_padding(const Image& image, uint8_t expand, unsigned char value);
+	image_padding(const Image& image, uint8_t expand, Byte value);
 }
