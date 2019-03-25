@@ -115,7 +115,8 @@ namespace immagine
 			self.data[i] = 0;
 			self.data[i + 1] = 0;
 			self.data[i + 2] = image.data[i];
-			(image.depth == 4) ? self.data[i + image.depth - 1] = 0;
+			if(image.depth == 4)
+				self.data[i + image.depth - 1] = 0;
 		}
 
 		return self;
