@@ -13,7 +13,7 @@ namespace immagine
 	Image
 	image_new(uint32_t width, uint32_t height, uint32_t depth)
 	{
-		assert(depth != 0 && "Unsupported image format");
+		assert(width != 0 && height != 0 && depth != 0 && "Width, hieght and depth must be grater than zero");
 
 		Image self{};
 
@@ -59,13 +59,13 @@ namespace immagine
 			return stbi_write_jpg(file_path, image.width, image.height, image.depth, image.data, 0);
 
 		default:
-			assert(false && "The kind of image is wierd\n");
+			assert(false && "Unsupported image format\n");
 			return false;
 		}
 	}
 
 	Image
-	image_red_channel(const Image & image)
+	image_red_channel(const Image& image)
 	{
 		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
 
@@ -77,13 +77,14 @@ namespace immagine
 			self.data[i] = image.data[i];
 			self.data[i + 1] = 0;
 			self.data[i + 2] = 0;
+			self.data[i + image.depth - 1] = 0;
 		}
 
 		return self;
 	}
 
 	Image
-	image_green_channel(const Image & image)
+	image_green_channel(const Image& image)
 	{
 		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
 
@@ -95,13 +96,14 @@ namespace immagine
 			self.data[i] = 0;
 			self.data[i + 1] = image.data[i];
 			self.data[i + 2] = 0;
+			self.data[i + image.depth - 1] = 0;
 		}
 
 		return self;
 	}
 
 	Image
-	image_blue_channel(const Image & image)
+	image_blue_channel(const Image& image)
 	{
 		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
 
@@ -113,6 +115,7 @@ namespace immagine
 			self.data[i] = 0;
 			self.data[i + 1] = 0;
 			self.data[i + 2] = image.data[i];
+			(image.depth == 4) ? self.data[i + image.depth - 1] = 0;
 		}
 
 		return self;
@@ -230,6 +233,8 @@ namespace immagine
 	Image
 	image_gray_scale(const Image & image)
 	{
+		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
 		Image self = image_new(image.width, image.height, 1);
 
 		size_t size = image.width * image.height * 1;
