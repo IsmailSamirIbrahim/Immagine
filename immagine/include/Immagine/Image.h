@@ -7,7 +7,7 @@ namespace immagine
 {
 	typedef unsigned char Byte;
 
-	enum IMAGE_KIND
+	enum IMAGE_FORMAT
 	{
 		NONE,
 		BMP,
@@ -17,7 +17,7 @@ namespace immagine
 
 	struct Image
 	{
-		Byte *data;
+		Byte* data;
 		uint32_t width;
 		uint32_t height;
 		uint32_t depth;
@@ -73,7 +73,10 @@ namespace immagine
 	image_load(const char* file_path);
 
 	API_IMMAGINE bool
-	image_save(const char* file_path, const Image& image, IMAGE_KIND kind);
+	image_save(const char* file_path, const Image& image, IMAGE_FORMAT kind);
+
+	API_IMMAGINE Image
+	image_clone(const Image& image);
 
 	API_IMMAGINE Image
 	image_red_channel(const Image& image);
@@ -106,8 +109,17 @@ namespace immagine
 	image_binarize(const Image& image);
 
 	API_IMMAGINE Image
+	image_padding(const Image& image, uint8_t expand, Byte value);
+
+	/*BasicTransformations*/
+	API_IMMAGINE Image
 	image_gray_scale(const Image& image);
 
 	API_IMMAGINE Image
-	image_padding(const Image& image, uint8_t expand, Byte value);
+	image_flip_vertically(const Image& image);
+	//Flip
+	//Mirror
+	//Negative
+	//RotateLeft
+	//RotateRight	
 }

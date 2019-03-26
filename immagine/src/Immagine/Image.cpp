@@ -41,27 +41,38 @@ namespace immagine
 	{
 		Image self{};
 		self.data = stbi_load(file_path, (int*)&self.width, (int*)&self.height, (int*)&self.depth, 0);
+
 		return self;
 	}
 
 	bool
-	image_save(const char* file_path, const Image& image, IMAGE_KIND kind)
+	image_save(const char* file_path, const Image& image, IMAGE_FORMAT kind)
 	{
 		switch (kind)
 		{
-		case IMAGE_KIND::BMP:
+		case IMAGE_FORMAT::BMP:
 			return stbi_write_bmp(file_path, image.width, image.height, image.depth, image.data);
 
-		case IMAGE_KIND::PNG:
+		case IMAGE_FORMAT::PNG:
 			return stbi_write_png(file_path, image.width, image.height, image.depth, image.data, 0);
 
-		case IMAGE_KIND::JPEG:
+		case IMAGE_FORMAT::JPEG:
 			return stbi_write_jpg(file_path, image.width, image.height, image.depth, image.data, 0);
 
 		default:
 			assert(false && "Unsupported image format\n");
 			return false;
 		}
+	}
+
+	Image
+	image_clone(const Image& image)
+	{
+		Image self = image_new(image.width, image.height, image.depth);
+
+		::memcpy(self.data, image.data, image.width * image.height * image.depth);
+
+		return self;
 	}
 
 	Image
@@ -231,24 +242,6 @@ namespace immagine
 		return self;
 	}
 
-	Image
-	image_gray_scale(const Image & image)
-	{
-		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
-
-		Image self = image_new(image.width, image.height, 1);
-
-		size_t size = image.width * image.height * 1;
-		for (size_t i = 0, j = 0; i < size; ++i, j += image.depth)
-		{
-			// using The luminosity method
-			unsigned char gray_scale = ((0.21 * image.data[j]) + (0.72 * image.data[j + 1]) + (0.07 * image.data[j + 2])) / 3;
-			self.data[i] = gray_scale;
-		}
-
-		return self;
-	}
-
 	inline static Image
 	_image_pad_2d(const Image& image, uint8_t expand, unsigned char value)
 	{
@@ -292,5 +285,41 @@ namespace immagine
 			assert(false && "Unsupported image format");
 			return image;
 		}
+	}
+
+	Image
+	image_gray_scale(const Image & image)
+	{
+		assert(image.depth == 3 || image.depth == 4 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
+		Image self = image_new(image.width, image.height, 1);
+
+		size_t size = image.width * image.height * 1;
+		for (size_t i = 0, j = 0; i < size; ++i, j += image.depth)
+		{
+			// using The luminosity method
+			unsigned char gray_scale = ((0.21 * image.data[j]) + (0.72 * image.data[j + 1]) + (0.07 * image.data[j + 2])) / 3;
+			self.data[i] = gray_scale;
+		}
+
+		return self;
+	}
+
+	Image
+	image_flip_vertically(const Image& image)
+	{
+		Image self = image_new(image.width, image.height, image.depth);
+		
+		size_t size = image.width * image.height * image.depth;
+		for (size_t i = 0; i < size; i += image.depth)
+		{
+			self.data[i] = image.data[image.width + i];
+			self.data[i + 1] = image.data[image.width + 1 + i];
+			self.data[i + 2] = image.data[image.width + 2 + i];
+			if(image.depth == 4)
+				self.data[i + 3] = image.data[image.width - 4 + i];
+		}
+
+		return self;
 	}
 }
