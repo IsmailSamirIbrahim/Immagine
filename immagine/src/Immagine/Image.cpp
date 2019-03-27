@@ -226,23 +226,39 @@ namespace immagine
 	image_red_channel(const Image& image)
 	{
 		assert(image.kind == IMAGE_KIND::RGB || image.kind == IMAGE_KIND::RGBA && "Image is not rgb or rgba");
+
 		Image self = image_new(image.width, image.height, image.channels);
 
 		// copy values of red channel
-		::memcpy(self.data, image.data, self.width * self.height);
-		
+		::memcpy(
+			self.data,
+			image.data,
+			self.width * self.height
+		);
+
 		// set the values of green channel to be zero
-		Byte* green_offset = self.data + self.width * self.height;
-		::memset(green_offset, 0, self.width * self.height);
+		::memset(
+			self.data + self.width * self.height,
+			0,
+			self.width * self.height
+		);
 
 		// set the values of blue channel to be zero
-		Byte* blue_offset = green_offset + self.width * self.height;
-		::memset(blue_offset, 0, self.width * self.height);
-		
-		// copy values of alpha channel
-		//Byte* alpha_offset_dst = blue_offset + self.width * self.height;
-		//Byte* alpha_offset_src = image.data + image.width * image.height * 3;
-		//::memcpy(alpha_offset_dst, alpha_offset_src, self.width * self.height);
+		::memset(
+			self.data + self.width * self.height * 2,
+			0,
+			self.width * self.height
+		);
+
+		if (image.channels == 4)
+		{
+			// copy values of alpha channel
+			::memcpy(
+				self.data + self.width * self.height * 3,
+				image.data + image.width * image.height * 3,
+				self.width * self.height
+			);
+		}
 
 		return self;
 	}
@@ -250,14 +266,82 @@ namespace immagine
 	Image
 	image_green_channel(const Image& image)
 	{
+		assert(image.kind == IMAGE_KIND::RGB || image.kind == IMAGE_KIND::RGBA && "Image is not rgb or rgba");
+
 		Image self = image_new(image.width, image.height, image.channels);
+
+		// set the values of red channel to be zero
+		::memset(
+			self.data,
+			0,
+			self.width * self.height
+		);
+
+		// copy values of green channel
+		::memcpy(
+			self.data + self.width * self.height,
+			image.data + self.width * self.height,
+			self.width * self.height
+		);
+
+		// set the values of blue channel to be zero
+		::memset(
+			self.data + self.width * self.height * 2,
+			0,
+			self.width * self.height
+		);
+
+		if (image.channels == 4)
+		{
+			// copy values of alpha channel
+			::memcpy(
+				self.data + self.width * self.height * 3,
+				image.data + image.width * image.height * 3,
+				self.width * self.height
+			);
+		}
+
 		return self;
 	}
 
 	Image
 	image_blue_channel(const Image& image)
 	{
+		assert(image.kind == IMAGE_KIND::RGB || image.kind == IMAGE_KIND::RGBA && "Image is not rgb or rgba");
+
 		Image self = image_new(image.width, image.height, image.channels);
+
+		// set the values of red channel to be zero
+		::memset(
+			self.data,
+			0,
+			self.width * self.height
+		);
+
+		// set the values of green channel to be zero
+		::memset(
+			self.data + self.width * self.height,
+			0,
+			self.width * self.height
+		);
+
+		// copy values of blue channel
+		::memcpy(
+			self.data + self.width * self.height * 2,
+			image.data + self.width * self.height * 2,
+			self.width * self.height
+		);
+
+		if (image.channels == 4)
+		{
+			// copy values of alpha channel
+			::memcpy(
+				self.data + self.width * self.height * 3,
+				image.data + image.width * image.height * 3,
+				self.width * self.height
+			);
+		}
+
 		return self;
 	}
 }
