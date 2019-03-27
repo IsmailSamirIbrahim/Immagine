@@ -1,64 +1,35 @@
 #pragma once
-#include <stdint.h>
-#include <assert.h>
 
 #include "Immagine/Exports.h"
+#include "Immagine/Imagedef.h"
+
 namespace immagine
 {
-	typedef unsigned char Byte;
-
-	enum IMAGE_FORMAT
-	{
-		NONE,
-		BMP,
-		PNG,
-		JPEG
-	};
-
 	struct Image
 	{
 		Byte* data;
 		uint32_t width;
 		uint32_t height;
-		uint32_t depth;
+		uint8_t channels;
+		IMAGE_KIND kind;
 
-		// operator overloading for 2D image
 		Byte&
-		operator()(size_t ix, size_t iy)
+		operator()(size_t row, size_t column)
 		{
-			assert(ix >= 0 && ix < width && iy >= 0 && iy < height && "ERROR: Index out of range.\n");
-			size_t idx = ix + iy * width;
-			return data[idx];
+			assert(row >= 0 && row < width && column >= 0 && column < height && "Index out of range.\n");	
+			return data[row * width + column];
 		}
 
 		const Byte&
-		operator()(size_t ix, size_t iy) const
+		operator()(size_t row, size_t column) const
 		{
-			assert(ix >= 0 && ix < width && iy >= 0 && iy < height && "ERROR: Index out of range.\n");
-			size_t idx = ix + iy * width;
-			return data[idx];
-		}
-
-		// operator overloading for 3D image
-		Byte&
-		operator()(size_t ix, size_t iy, size_t iz)
-		{
-			assert(ix >= 0 && ix < width && iy >= 0 && iy < height && iz >= 0 && iz < depth && "ERROR: Index out of range.\n");
-			size_t idx = ix + iy * width + iz * width * height;
-			return data[idx];
-		}
-
-		const Byte&
-		operator()(size_t ix, size_t iy, size_t iz) const
-		{
-			assert(ix >= 0 && ix < width && iy >= 0 && iy < height && iz >= 0 && iz < depth && "ERROR: Index out of range.\n");
-			size_t idx = ix + iy * width + iz * width * height;
-			return data[idx];
+			assert(row >= 0 && row < width && column >= 0 && column < height && "Index out of range.\n");
+			return data[row * width + column];
 		}
 	};
 
 	API_IMMAGINE Image
-	image_new(uint32_t width, uint32_t height, uint32_t depth = 4);
+	image_new(uint32_t width, uint32_t height, uint8_t channels = 4);
 
 	API_IMMAGINE void
 	image_free(Image& image);
@@ -79,6 +50,10 @@ namespace immagine
 	image_clone(const Image& image);
 
 	API_IMMAGINE Image
+	image_from_buffer(uint32_t width, uint32_t height, uint8_t channels, const Byte* data);
+
+	/*Get specific channel*/
+	API_IMMAGINE Image
 	image_red_channel(const Image& image);
 
 	API_IMMAGINE Image
@@ -87,39 +62,4 @@ namespace immagine
 	API_IMMAGINE Image
 	image_blue_channel(const Image& image);
 
-	API_IMMAGINE void
-	image_histogram(const Image& image, float hist[]);
-
-	API_IMMAGINE void
-	image_histogram_red_channel(const Image& image, float hist[]);
-
-	API_IMMAGINE void
-	image_histogram_green_channel(const Image& image, float hist[]);
-
-	API_IMMAGINE void
-	image_histogram_blue_channel(const Image& image, float hist[]);
-
-	API_IMMAGINE Image
-	image_histogram_equalization(const Image& image);
-
-	API_IMMAGINE Image
-	image_brightness(const Image& image, int16_t brightness);
-
-	API_IMMAGINE Image
-	image_binarize(const Image& image);
-
-	API_IMMAGINE Image
-	image_padding(const Image& image, uint8_t expand, Byte value);
-
-	/*BasicTransformations*/
-	API_IMMAGINE Image
-	image_gray_scale(const Image& image);
-
-	API_IMMAGINE Image
-	image_flip_vertically(const Image& image);
-	//Flip
-	//Mirror
-	//Negative
-	//RotateLeft
-	//RotateRight	
 }
