@@ -60,4 +60,20 @@ namespace immagine
 
 	API_IMMAGINE Image
 	image_blue_channel(const Image& image);
+
+	/*Get specific histogram*/
+	API_IMMAGINE void
+	image_histogram(const Image& image, float hist[]);
+
+	API_IMMAGINE void
+	image_histogram_red_channel(const Image& image, float hist[]);
+
+	API_IMMAGINE void
+	image_histogram_green_channel(const Image& image, float hist[]);
+
+	API_IMMAGINE void
+	image_histogram_blue_channel(const Image& image, float hist[]);
+
+	API_IMMAGINE Image
+	image_histogram_equalization(const Image& image);
 }

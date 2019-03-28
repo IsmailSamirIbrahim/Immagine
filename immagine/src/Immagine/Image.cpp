@@ -357,4 +357,79 @@ namespace immagine
 			break;
 		}
 	}
+
+	void
+	image_histogram(const Image& image, float hist[])
+	{
+		size_t size = image.width * image.height * image.channels;
+		for (size_t i = 0; i < size; ++i)
+			hist[image.data[i]] += 1;
+
+		for (size_t i = 0; i < 256; ++i)
+			hist[i] = (float)hist[i] / (float)size;
+	}
+
+	void
+	image_histogram_red_channel(const Image & image, float hist[])
+	{
+		assert(image.channels >= 3 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
+		size_t size = image.width * image.height;
+		for (size_t i = 0; i < size; ++i)
+			hist[image.data[i]] += 1;
+
+		for (size_t i = 0; i < 256; ++i)
+			hist[i] = (float)hist[i] / (float)size;
+	}
+
+	void
+	image_histogram_green_channel(const Image & image, float hist[])
+	{
+		assert(image.channels >= 3 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
+		size_t size = image.width * image.height;
+		for (size_t i = size; i < 2 * size; ++i)
+			hist[image.data[i]] += 1;
+
+		for (size_t i = 0; i < 256; ++i)
+			hist[i] = (float)hist[i] / (float)size;
+	}
+
+	void
+	image_histogram_blue_channel(const Image & image, float hist[])
+	{
+		assert(image.channels >= 3 && "Image must be 3D image with red, green, blue and/or alpha channel");
+
+		size_t size = image.width * image.height;
+		for (size_t i = 2 * size; i < 3 * size; ++i)
+			hist[image.data[i]] += 1;
+
+		for (size_t i = 0; i < 256; ++i)
+			hist[i] = (float)hist[i] / (float)size;
+	}
+
+	Image
+	image_histogram_equalization(const Image& image)
+	{
+		Image self = image_new(image.width, image.height, image.channels);
+
+		// calculate PMF(Probability Mass Function)
+		float hist[256] = {};
+		image_histogram(image, hist);
+
+		// calculate CDF(Cumulative Distributive Function)
+		for (size_t i = 1; i < 256; ++i)
+			hist[i] += hist[i - 1];
+
+		// calculate CDF according to gray levels
+		for (size_t i = 1; i < 256; ++i)
+			hist[i] = (255 * hist[i] + 0.5f);
+
+		// mapping new values with according pixel
+		size_t size = image.width * image.height * image.channels;
+		for (size_t i = 0; i < size; ++i)
+			self.data[i] = hist[image.data[i]];
+
+		return self;
+	}
 }
