@@ -11,7 +11,6 @@ namespace immagine
 		uint32_t width;
 		uint32_t height;
 		uint8_t channels;
-		IMAGE_KIND kind;
 
 		Byte&
 		operator()(size_t row, size_t column)
@@ -61,5 +60,4 @@ namespace immagine
 
 	API_IMMAGINE Image
 	image_blue_channel(const Image& image);
-
 }

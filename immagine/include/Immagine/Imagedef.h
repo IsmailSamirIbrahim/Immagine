@@ -19,11 +19,3 @@ enum class IMAGE_FORMAT
 	PNG,
 	JPEG
 };
-
-enum class IMAGE_KIND
-{
-	NONE,
-	GRAY_SCALE,
-	RGB,
-	RGBA
-};
