@@ -11,14 +11,16 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	Image image = image_load("D:/alpha.png");
+	Image image = image_load("D:/gray.jpg");
 
-	auto start = high_resolution_clock::now();
-	float hist[256] = {};
-	image_histogram_green_channel(image, hist);
-	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<milliseconds>(stop - start);
-	cout << duration.count() << endl;
+	Image img1 = image_brightness(image, 60);
+	Image img2 = image_brightness(image, -60);
+
+	image_save("D:/bright.png", img1, IMAGE_FORMAT::PNG);
+	image_save("D:/dark.png", img2, IMAGE_FORMAT::PNG);
+
+	Image img3 = image_binarize(image);
+	image_save("D:/binarized.png", img3, IMAGE_FORMAT::PNG);
 
 	/*Image r = image_red_channel(;image);
 	Image g = image_green_channel(image);

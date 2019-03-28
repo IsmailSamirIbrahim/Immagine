@@ -76,4 +76,12 @@ namespace immagine
 
 	API_IMMAGINE Image
 	image_histogram_equalization(const Image& image);
+
+	/*Pixel Operations*/
+	API_IMMAGINE Image
+	image_brightness(const Image& image, int16_t brightness);
+
+	API_IMMAGINE Image
+	image_binarize(const Image& image);
+
 }

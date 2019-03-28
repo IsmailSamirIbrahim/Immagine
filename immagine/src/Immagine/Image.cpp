@@ -432,4 +432,38 @@ namespace immagine
 
 		return self;
 	}
+
+	Image
+	image_brightness(const Image& image, int16_t brightness)
+	{
+		Image self = image_new(image.width, image.height, image.channels);
+
+		size_t size = image.width * image.height * image.channels;
+		for (size_t i = 0; i < size; ++i)
+		{
+			int16_t tmp = image.data[i] + brightness;
+			self.data[i] = (tmp < 0) ? 0 : (tmp > 255) ? 255 : tmp;
+		}
+
+		return self;
+	}
+
+	Image
+	image_binarize(const Image & image)
+	{
+		assert(image.channels == 1 && "Image must be gray level image\n");
+
+		Image self = image_new(image.width, image.height, image.channels);
+		size_t size = image.width * image.height * image.channels;
+
+		size_t sum = 0;
+		for (size_t i = 0; i < size; ++i)
+			sum += image.data[i];
+
+		uint8_t threshold = ((float)sum / (float)size + 0.5f);
+		for (size_t i = 0; i < size; ++i)
+			self.data[i] = (image.data[i] > threshold) ? 255 : 0;
+
+		return self;
+	}
 }
