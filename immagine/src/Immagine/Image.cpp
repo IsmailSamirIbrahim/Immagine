@@ -26,7 +26,7 @@ namespace immagine
 	}
 
 	Image
-	image_clone(const Image & image)
+	image_clone(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -126,5 +126,17 @@ namespace immagine
 		image_free(self);
 
 		return result;
+	}
+
+	Image
+	image_red_channel(const Image& image)
+	{
+		Image self = image_new(image.width, image.height, 1);
+
+		size_t size = image.width * image.height;
+		for (size_t i = 0; i < size; ++i)
+			self.data[i] = image.data[i];
+
+		return self;
 	}
 }

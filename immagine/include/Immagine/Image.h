@@ -50,4 +50,8 @@ namespace immagine
 
 	API_IMMAGINE bool
 	image_save(const char* file_path, const Image& image, IMAGE_FORMAT kind);
+
+	/*Get specific channel*/
+	API_IMMAGINE Image
+	image_red_channel(const Image& image);
 }
