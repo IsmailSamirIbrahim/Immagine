@@ -134,8 +134,24 @@ namespace immagine
 		Image self = image_new(image.width, image.height, 1);
 
 		size_t size = image.width * image.height;
-		for (size_t i = 0; i < size; ++i)
-			self.data[i] = image.data[i];
+		size_t i = 0;
+		size_t j = 0;
+		while (size--)
+			self.data[i++] = image.data[j++];
+
+		return self;
+	}
+
+	Image
+	image_green_channel(const Image& image)
+	{
+		Image self = image_new(image.width, image.height, 1);
+
+		size_t size = image.width * image.height;
+		size_t i = 0;
+		size_t j = image.width * image.height;
+		while (size--)
+			self.data[i++] = image.data[j++];
 
 		return self;
 	}

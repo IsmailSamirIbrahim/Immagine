@@ -54,4 +54,7 @@ namespace immagine
 	/*Get specific channel*/
 	API_IMMAGINE Image
 	image_red_channel(const Image& image);
+
+	API_IMMAGINE Image
+	image_green_channel(const Image& image);
 }
