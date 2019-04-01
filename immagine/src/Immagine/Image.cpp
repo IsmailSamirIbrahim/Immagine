@@ -209,4 +209,17 @@ namespace immagine
 
 		return self;
 	}
+
+	Image
+	image_flip_horizontally(const Image& image)
+	{
+		Image self = image_new(image.width, image.height, image.channels);
+
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = 0; i < image.height; ++i)
+				for (size_t j = 0; j < image.width; ++j)
+					self(i, j, k) = image(i, image.width - 1 - j, k);
+
+		return self;
+	}
 }

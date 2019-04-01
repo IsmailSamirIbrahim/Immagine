@@ -25,6 +25,20 @@ namespace immagine
 			assert(row >= 0 && row < height && column >= 0 && column < width && "Index out of range.\n");
 			return data[row * width + column];
 		}
+
+		Byte&
+		operator()(size_t row, size_t column, uint8_t channel)
+		{
+			assert(row >= 0 && row < height && column >= 0 && column < width && channel >= 0 && "Index out of range.\n");
+			return data[row * width + column + channel * width * height];
+		}
+
+		const Byte&
+		operator()(size_t row, size_t column, uint8_t channel) const
+		{
+			assert(row >= 0 && row < height && column >= 0 && column < width && channel >= 0 && "Index out of range.\n");
+			return data[row * width + column + channel * width * height];
+		}
 	};
 
 	API_IMMAGINE Image
@@ -67,4 +81,7 @@ namespace immagine
 	/*Basic Transformations*/
 	API_IMMAGINE Image
 	image_gray_scale(const Image& image);
+
+	API_IMMAGINE Image
+	image_flip_horizontally(const Image& image);
 }
