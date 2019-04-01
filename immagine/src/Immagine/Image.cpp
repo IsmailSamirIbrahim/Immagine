@@ -199,13 +199,14 @@ namespace immagine
 
 		Image self = image_new(image.width, image.height, 1);
 
-		Image red = image_red_channel(image);
-		Image green = image_green_channel(image);
-		Image blue = image_blue_channel(image);
-
+		size_t i = 0;
+		size_t r = 0;
+		size_t g = image.width * image.height;
+		size_t b = image.width * image.height * 2;
 		size_t size = image.width * image.height;
-		for (size_t i = 0; i < size; ++i)
-			self.data[i] = (float)((red.data[i]) + (green.data[i]) + (blue.data[i])) / 3.0f;
+
+		while(size--)
+			self.data[i++] = (float)((image.data[r++]) + (image.data[g++]) + (image.data[b++])) / 3.0f;
 
 		return self;
 	}
