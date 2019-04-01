@@ -191,4 +191,22 @@ namespace immagine
 
 		return self;
 	}
+
+	Image
+	image_gray_scale(const Image& image)
+	{
+		assert(image.channels > 1 && "Image is already gray scale image");
+
+		Image self = image_new(image.width, image.height, 1);
+
+		Image red = image_red_channel(image);
+		Image green = image_green_channel(image);
+		Image blue = image_blue_channel(image);
+
+		size_t size = image.width * image.height;
+		for (size_t i = 0; i < size; ++i)
+			self.data[i] = (float)((red.data[i]) + (green.data[i]) + (blue.data[i])) / 3.0f;
+
+		return self;
+	}
 }

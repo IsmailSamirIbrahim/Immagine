@@ -63,4 +63,8 @@ namespace immagine
 
 	API_IMMAGINE Image
 	image_alpha_channel(const Image& image);
+
+	/*Basic Transformations*/
+	API_IMMAGINE Image
+	image_gray_scale(const Image& image);
 }
