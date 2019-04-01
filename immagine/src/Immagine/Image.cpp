@@ -155,4 +155,18 @@ namespace immagine
 
 		return self;
 	}
+
+	Image
+	image_blue_channel(const Image& image)
+	{
+		Image self = image_new(image.width, image.height, 1);
+
+		size_t size = image.width * image.height;
+		size_t i = 0;
+		size_t j = image.width * image.height * 2;
+		while (size--)
+			self.data[i++] = image.data[j++];
+
+		return self;
+	}
 }
