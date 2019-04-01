@@ -60,4 +60,7 @@ namespace immagine
 
 	API_IMMAGINE Image
 	image_blue_channel(const Image& image);
+
+	API_IMMAGINE Image
+	image_alpha_channel(const Image& image);
 }
