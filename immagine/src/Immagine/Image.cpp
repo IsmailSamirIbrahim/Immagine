@@ -255,4 +255,17 @@ namespace immagine
 
 		return self;
 	}
+
+	Image
+	image_rotate_left(const Image& image)
+	{
+		Image self = image_new(image.height, image.width, image.channels);
+
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = 0; i < image.height; ++i)
+				for (size_t j = 0; j < image.width; ++j)
+					self(image.width - 1 - j, i, k) = image(i, j, k);
+
+		return self;
+	}
 }
