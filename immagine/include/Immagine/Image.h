@@ -90,4 +90,7 @@ namespace immagine
 
 	API_IMMAGINE Image
 	image_mirror(const Image& image);
+
+	API_IMMAGINE Image
+	image_rotate_right(const Image& image);
 }
