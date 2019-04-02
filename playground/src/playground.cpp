@@ -11,13 +11,17 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	auto start = high_resolution_clock::now();
-	
 	//type code here.
+	Image img = image_load("D:/rgb.jpg");
 
+	auto start = high_resolution_clock::now();
+	Image flip = image_flip_vertically(img);
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	printf("Time = %lld  millisecond\n", duration.count());
+
+	image_save("D:/fliped.jpg", flip, IMAGE_FORMAT::JPEG);
+
 
 	return 0;
 }
