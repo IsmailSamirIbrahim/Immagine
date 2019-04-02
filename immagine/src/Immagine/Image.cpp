@@ -236,4 +236,10 @@ namespace immagine
 
 		return self;
 	}
+
+	Image
+	image_mirror(const Image& image)
+	{
+		return image_flip_horizontally(image);
+	}
 }

@@ -15,7 +15,7 @@ main(int argc, char** argv)
 	Image img = image_load("D:/rgb.jpg");
 
 	auto start = high_resolution_clock::now();
-	Image flip = image_flip_vertically(img);
+	Image flip = image_mirror(img);
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	printf("Time = %lld  millisecond\n", duration.count());

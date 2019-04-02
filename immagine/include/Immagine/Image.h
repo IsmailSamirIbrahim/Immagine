@@ -87,4 +87,7 @@ namespace immagine
 
 	API_IMMAGINE Image
 	image_flip_vertically(const Image& image);
+
+	API_IMMAGINE Image
+	image_mirror(const Image& image);
 }
