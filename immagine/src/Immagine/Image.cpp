@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Immagine/Image.h"
+#include <algorithm>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -265,6 +266,29 @@ namespace immagine
 			for (size_t i = 0; i < image.height; ++i)
 				for (size_t j = 0; j < image.width; ++j)
 					self(image.width - 1 - j, i, k) = image(i, j, k);
+
+		return self;
+	}
+
+	Image
+	image_resize(const Image & image, uint32_t width, uint32_t height)
+	{
+		Image self = image_new(width, height, image.channels);
+
+		for (uint8_t k = 0; k < image.channels; ++k)
+		{
+			for (size_t i = 0; i < height; ++i)
+			{
+				for (size_t j = 0; j < width; ++j)
+				{
+					uint32_t srcX = int(round(float(j) / float(height) * float(image.height)));
+					uint32_t srcY = int(round(float(i) / float(width) * float(image.width)));
+					srcX = std::min(srcX, image.height - 1);
+					srcY = std::min(srcY, image.width - 1);
+					self(j, i, k) = image(srcX, srcY, k);
+				}
+			}
+		}
 
 		return self;
 	}

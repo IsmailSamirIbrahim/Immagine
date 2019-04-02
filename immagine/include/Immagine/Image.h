@@ -96,4 +96,7 @@ namespace immagine
 
 	API_IMMAGINE Image
 	image_rotate_left(const Image& image);
+
+	API_IMMAGINE Image
+	image_resize(const Image& image, uint32_t width, uint32_t height);
 }
