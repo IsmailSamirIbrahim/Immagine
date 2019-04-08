@@ -12,10 +12,17 @@
 
 typedef unsigned char Byte;
 
-enum class IMAGE_FORMAT
+enum IMAGE_FORMAT
 {
 	NONE,
 	BMP,
 	PNG,
 	JPEG
+};
+
+enum SCALLING_ALGORITHM
+{
+	NEAREST_NEIGHBOUR,
+	BILINEAR,
+	BICUBIC
 };

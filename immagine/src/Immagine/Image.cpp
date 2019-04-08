@@ -106,15 +106,15 @@ namespace immagine
 		bool result;
 		switch (kind)
 		{
-		case IMAGE_FORMAT::BMP:
+		case BMP:
 			result = stbi_write_bmp(file_path, self.width, self.height, self.channels, self.data);
 			break;
 
-		case IMAGE_FORMAT::PNG:
+		case PNG:
 			result = stbi_write_png(file_path, self.width, self.height, self.channels, self.data, 0);
 			break;
 
-		case IMAGE_FORMAT::JPEG:
+		case JPEG:
 			result = stbi_write_jpg(file_path, self.width, self.height, self.channels, self.data, 0);
 			break;
 
@@ -271,25 +271,38 @@ namespace immagine
 	}
 
 	Image
-	image_resize(const Image & image, uint32_t width, uint32_t height)
+	_image_nearest_neighbour_algorithm(const Image & image, uint32_t width, uint32_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
+		float width_ratio = (float)image.width / (float)width;
+		float height_ratio = (float)image.height / (float)height;
+
 		for (uint8_t k = 0; k < image.channels; ++k)
-		{
 			for (size_t i = 0; i < height; ++i)
-			{
 				for (size_t j = 0; j < width; ++j)
-				{
-					uint32_t srcX = int(round(float(j) / float(height) * float(image.height)));
-					uint32_t srcY = int(round(float(i) / float(width) * float(image.width)));
-					srcX = std::min(srcX, image.height - 1);
-					srcY = std::min(srcY, image.width - 1);
-					self(j, i, k) = image(srcX, srcY, k);
-				}
-			}
-		}
+					self(i, j, k) = image(floor(i * height_ratio), floor(j * width_ratio), k);
 
 		return self;
+	}
+
+	Image
+	image_resize(const Image & image, uint32_t width, uint32_t height, SCALLING_ALGORITHM algorithm)
+	{
+		switch (algorithm)
+		{
+		case NEAREST_NEIGHBOUR:
+			return _image_nearest_neighbour_algorithm(image, width, height);
+
+		case BILINEAR:
+			return Image();
+
+		case BICUBIC:
+			return Image();
+
+		default:
+			assert(false && "Unreachable state");
+			return Image();
+		}
 	}
 }

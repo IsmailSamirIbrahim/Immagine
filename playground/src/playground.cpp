@@ -12,15 +12,16 @@ int
 main(int argc, char** argv)
 {
 	//type code here.
-	Image img = image_load("D:/1.jpg");
+	Image img = image_load("D:/big.jpg");
 
 	auto start = high_resolution_clock::now();
-	Image rotate = image_resize(img, 500, 500);
+	//Image rotate = image_flip_horizontally(img);
+	Image image = image_resize(img, 250, 250);
+	image_save("D:/fliped.png", image, IMAGE_FORMAT::PNG);
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	printf("Time = %lld  millisecond\n", duration.count());
 
-	image_save("D:/resized.png", rotate, IMAGE_FORMAT::PNG);
 
 
 	return 0;
