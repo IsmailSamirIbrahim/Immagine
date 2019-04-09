@@ -271,7 +271,7 @@ namespace immagine
 	}
 
 	Image
-	_image_nearest_neighbour_algorithm(const Image & image, uint32_t width, uint32_t height)
+	_image_nearest_neighbour_algorithm(const Image& image, uint32_t width, uint32_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
@@ -287,6 +287,45 @@ namespace immagine
 	}
 
 	Image
+	_image_bilinear_algorithm(const Image& image, uint32_t width, uint32_t height)
+	{
+		Image self = image_new(width, height, image.channels);
+
+		float width_ratio = (float)image.width / (float)width;
+		float height_ratio = (float)image.height / (float)height;
+
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = 0; i < height - 1; ++i)
+				for (size_t j = 0; j < width - 1; ++j)
+				{
+					size_t src_i = (size_t)(i * height_ratio);
+					size_t src_j = (size_t)(j * width_ratio);
+
+					float x_dist = (width_ratio  * j) - src_j;
+					float y_dist = (height_ratio * i) - src_i;
+
+					Byte p0 = image(src_i, src_j, k);
+					Byte p1 = (src_j + 1 < image.width) ? image(src_i, src_j + 1, k) : 0;
+					Byte p2 = (src_i + 1 < image.height) ? image(src_i + 1, src_j, k) : 0;
+					Byte p3 = ((src_i + 1 < image.height) && (src_j + 1 < image.width)) ? image(src_i + 1, src_j + 1, k) : 0;
+
+					float lp0 = p0 * (1 - x_dist) + p1 * x_dist;
+					float lp1 = p2 * (1 - x_dist) + p3 * x_dist;
+
+					int color = (int)(lp0 * (1 - y_dist) + lp1 * y_dist);
+					self(i, j, k) = (color < BLACK) ? BLACK : (color > WHITE) ? WHITE: color;
+				}
+
+		return self;
+	}
+
+	Image
+	_image_bicubic_algorithm(const Image& image, uint32_t width, uint32_t height)
+	{
+		return Image();
+	}
+
+	Image
 	image_resize(const Image & image, uint32_t width, uint32_t height, SCALLING_ALGORITHM algorithm)
 	{
 		switch (algorithm)
@@ -295,10 +334,10 @@ namespace immagine
 			return _image_nearest_neighbour_algorithm(image, width, height);
 
 		case BILINEAR:
-			return Image();
+			return _image_bilinear_algorithm(image, width, height);
 
 		case BICUBIC:
-			return Image();
+			return _image_bicubic_algorithm(image, width, height);
 
 		default:
 			assert(false && "Unreachable state");

@@ -14,7 +14,6 @@ typedef unsigned char Byte;
 
 enum IMAGE_FORMAT
 {
-	NONE,
 	BMP,
 	PNG,
 	JPEG
