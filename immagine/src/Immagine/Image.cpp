@@ -22,6 +22,7 @@ namespace immagine
 		self.height = height;
 		self.channels = channels;
 		self.data = (Byte*)::malloc(width * height * channels * sizeof(Byte));
+		::memset(self.data, 0, width * height * channels);
 
 		return self;
 	}
@@ -57,6 +58,14 @@ namespace immagine
 		self.data = nullptr;
 	}
 	
+	void
+	image_set_pixel(Image& image, uint32_t row, uint32_t column, COLOR color)
+	{
+		image(row, column, 0) = color.red;
+		image(row, column, 1) = color.green;
+		image(row, column, 2) = color.blue;
+	}
+
 	inline static void
 	_image_data_parser(Byte* src, Byte* dst, uint32_t width, uint32_t height, uint8_t channels)
 	{

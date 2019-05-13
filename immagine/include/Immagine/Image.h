@@ -53,6 +53,9 @@ namespace immagine
 	API_IMMAGINE void
 	image_free(Image& image);
 
+	API_IMMAGINE void
+	image_set_pixel(Image& image, uint32_t row, uint32_t column, COLOR color);
+
 	inline static void
 	destruct(Image& image)
 	{
