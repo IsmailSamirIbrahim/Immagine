@@ -15,10 +15,10 @@ main(int argc, char** argv)
 
 	//type code here.
 
-	Image image = image_new(100, 100, 3);
+	Image image = image_load("D:/1.jpeg");
 
-	for (size_t i = 40; i < 60; ++i)
-		image_set_pixel(image, 50, i, BLUE);
+	for (size_t i = 40; i < 300; ++i)
+		image_set_pixel(image, 50, i, RED);
 	
 	image = image_flip_vertically(image);
 
