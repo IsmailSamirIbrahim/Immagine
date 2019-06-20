@@ -301,6 +301,3 @@ Images
 *.bmp
 *.jpeg
 *.png
-
-# Histogram Files
-*.txt
