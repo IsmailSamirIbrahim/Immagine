@@ -41,19 +41,19 @@ namespace immagine
 		}
 	};
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_new(uint32_t width, uint32_t height, uint8_t channels = 1);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_clone(const Image& image);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_from_ptr(const void* data, uint32_t width, uint32_t height, uint8_t channels);
 
-	API_IMMAGINE void
+	IMMAGINE_EXPORT void
 	image_free(Image& image);
 
-	API_IMMAGINE void
+	IMMAGINE_EXPORT void
 	image_set_pixel(Image& image, uint32_t row, uint32_t column, COLOR color);
 
 	inline static void
@@ -62,44 +62,44 @@ namespace immagine
 		image_free(image);
 	}
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_load(const char* file_path);
 
-	API_IMMAGINE bool
+	IMMAGINE_EXPORT bool
 	image_save(const char* file_path, const Image& image, IMAGE_FORMAT kind);
 
 	/*Get specific channel*/
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_red_channel(const Image& image);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_green_channel(const Image& image);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_blue_channel(const Image& image);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_alpha_channel(const Image& image);
 
 	/*Basic Transformations*/
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_gray_scale(const Image& image);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_flip_horizontally(const Image& image);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_flip_vertically(const Image& image);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_mirror(const Image& image);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_rotate_right(const Image& image);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_rotate_left(const Image& image);
 
-	API_IMMAGINE Image
+	IMMAGINE_EXPORT Image
 	image_resize(const Image& image, uint32_t width, uint32_t height, SCALLING_ALGORITHM algorithm = NEAREST_NEIGHBOUR);
 }
