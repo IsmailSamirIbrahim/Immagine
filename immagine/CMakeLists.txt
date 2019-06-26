@@ -34,11 +34,6 @@ if(WIN32)
 		PRIVATE
 			OS_WINDOWS=1
 	)
-elseif(UNIX)
-	target_compile_definitions(Immagine
-		PRIVATE
-			OS_LINUX=1
-	)
 endif()
 
 

@@ -12,13 +12,19 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
 add_subdirectory(external/stb)
 
 # internal libraries
-add_subdirectory(Immagine)
+add_subdirectory(immagine)
 add_subdirectory(playground)
+add_subdirectory(gui)
 
 # Organize Targets into folders
 set_target_properties(
 	Immagine
-	PROPERTIES FOLDER immagine_lib
+	PROPERTIES FOLDER immagine
+)
+
+set_target_properties(
+	gui
+	PROPERTIES FOLDER App
 )
 
 set_target_properties(
