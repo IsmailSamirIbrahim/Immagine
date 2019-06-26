@@ -18,5 +18,10 @@ add_subdirectory(playground)
 # Organize Targets into folders
 set_target_properties(
 	Immagine
-	PROPERTIES FOLDER immagin_lib
+	PROPERTIES FOLDER immagine_lib
+)
+
+set_target_properties(
+	playground
+	PROPERTIES FOLDER Testing
 )

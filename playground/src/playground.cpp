@@ -11,22 +11,19 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	//auto start = high_resolution_clock::now();
+	Image img = image_load("D:/very_big.jpg");
+	
+	auto start = high_resolution_clock::now();
 
 	//type code here.
 
-	Image image = image_load("D:/1.jpeg");
+	Image image = image_rotate_left(img);
 
-	for (size_t i = 40; i < 300; ++i)
-		image_set_pixel(image, 50, i, RED);
-	
-	image = image_flip_vertically(image);
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<seconds>(stop - start);
+	printf("Time = %lld  millisecond\n", duration.count());
 
 	image_save("D:/test.bmp", image, BMP);
-
-	//auto stop = high_resolution_clock::now();
-	//auto duration = duration_cast<seconds>(stop - start);
-	//printf("Time = %lld  millisecond\n", duration.count());
 
 	return 0;
 }
