@@ -8,8 +8,8 @@ namespace immagine
 	struct Image
 	{
 		Byte* data;
-		uint32_t width;
-		uint32_t height;
+		size_t width;
+		size_t height;
 		uint8_t channels;
 
 		Byte&
@@ -42,19 +42,19 @@ namespace immagine
 	};
 
 	IMMAGINE_EXPORT Image
-	image_new(uint32_t width, uint32_t height, uint8_t channels = 1);
+	image_new(size_t width, size_t height, uint8_t channels = 1);
 
 	IMMAGINE_EXPORT Image
 	image_clone(const Image& image);
 
 	IMMAGINE_EXPORT Image
-	image_from_ptr(const void* data, uint32_t width, uint32_t height, uint8_t channels);
+	image_from_ptr(const void* data, size_t width, size_t height, uint8_t channels);
 
 	IMMAGINE_EXPORT void
 	image_free(Image& image);
 
 	IMMAGINE_EXPORT void
-	image_set_pixel(Image& image, uint32_t row, uint32_t column, COLOR color);
+	image_set_pixel(Image& image, size_t row, size_t column, COLOR color);
 
 	inline static void
 	destruct(Image& image)
@@ -101,5 +101,9 @@ namespace immagine
 	image_rotate_left(const Image& image);
 
 	IMMAGINE_EXPORT Image
-	image_resize(const Image& image, uint32_t width, uint32_t height, SCALLING_ALGORITHM algorithm = NEAREST_NEIGHBOUR);
+	image_resize(const Image& image, size_t width, size_t height, SCALLING_ALGORITHM algorithm = NEAREST_NEIGHBOUR);
+
+	IMMAGINE_EXPORT Image
+	image_crop(const Image& image, size_t x, size_t y, size_t width, size_t height);
+
 }

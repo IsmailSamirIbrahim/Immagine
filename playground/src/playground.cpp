@@ -16,8 +16,7 @@ main(int argc, char** argv)
 	auto start = high_resolution_clock::now();
 
 	//type code here.
-
-	Image image = image_rotate_left(img);
+	Image image = image_crop(img, 2500, 4300, 1000, 1000);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);

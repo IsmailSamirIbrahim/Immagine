@@ -12,7 +12,7 @@
 namespace immagine
 {
 	Image
-	image_new(uint32_t width, uint32_t height, uint8_t channels)
+	image_new(size_t width, size_t height, uint8_t channels)
 	{
 		assert(width != 0 && height != 0 && channels != 0 && "Width, height and channels must be grater than zero");
 
@@ -38,7 +38,7 @@ namespace immagine
 	}
 
 	Image
-	image_from_ptr(const void* data, uint32_t width, uint32_t height, uint8_t channels)
+	image_from_ptr(const void* data, size_t width, size_t height, uint8_t channels)
 	{
 		Image self = image_new(width, height, channels);
 
@@ -59,7 +59,7 @@ namespace immagine
 	}
 	
 	void
-	image_set_pixel(Image& image, uint32_t row, uint32_t column, COLOR color)
+	image_set_pixel(Image& image, size_t row, size_t column, COLOR color)
 	{
 		image(row, column, 0) = color.red;
 		image(row, column, 1) = color.green;
@@ -67,7 +67,7 @@ namespace immagine
 	}
 
 	inline static void
-	_image_data_parser(Byte* src, Byte* dst, uint32_t width, uint32_t height, uint8_t channels)
+	_image_data_parser(Byte* src, Byte* dst, size_t width, size_t height, uint8_t channels)
 	{
 		size_t j = 0;
 		size_t size = width * height * channels;
@@ -116,15 +116,15 @@ namespace immagine
 		switch (kind)
 		{
 		case BMP:
-			result = stbi_write_bmp(file_path, self.width, self.height, self.channels, self.data);
+			result = stbi_write_bmp(file_path, int(self.width), int(self.height), int(self.channels), self.data);
 			break;
 
 		case PNG:
-			result = stbi_write_png(file_path, self.width, self.height, self.channels, self.data, 0);
+			result = stbi_write_png(file_path, int(self.width), int(self.height), int(self.channels), self.data, 0);
 			break;
 
 		case JPEG:
-			result = stbi_write_jpg(file_path, self.width, self.height, self.channels, self.data, 0);
+			result = stbi_write_jpg(file_path, int(self.width), int(self.height), int(self.channels), self.data, 0);
 			break;
 
 		default:
@@ -216,7 +216,7 @@ namespace immagine
 		size_t size = image.width * image.height;
 
 		while(size--)
-			self.data[i++] = (float)((image.data[r++]) + (image.data[g++]) + (image.data[b++])) / 3.0f;
+			self.data[i++] = Byte(float((image.data[r++]) + (image.data[g++]) + (image.data[b++])) / 3.0f);
 
 		return self;
 	}
@@ -280,7 +280,7 @@ namespace immagine
 	}
 
 	Image
-	_image_nearest_neighbour_algorithm(const Image& image, uint32_t width, uint32_t height)
+	_image_nearest_neighbour_algorithm(const Image& image, size_t width, size_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
@@ -290,13 +290,13 @@ namespace immagine
 		for (uint8_t k = 0; k < image.channels; ++k)
 			for (size_t i = 0; i < height; ++i)
 				for (size_t j = 0; j < width; ++j)
-					self(i, j, k) = image(floor(i * height_ratio), floor(j * width_ratio), k);
+					self(i, j, k) = image(size_t(floor(i * height_ratio)), size_t(floor(j * width_ratio)), k);
 
 		return self;
 	}
 
 	Image
-	_image_bilinear_algorithm(const Image& image, uint32_t width, uint32_t height)
+	_image_bilinear_algorithm(const Image& image, size_t width, size_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
@@ -329,13 +329,13 @@ namespace immagine
 	}
 
 	Image
-	_image_bicubic_algorithm(const Image& image, uint32_t width, uint32_t height)
+	_image_bicubic_algorithm(const Image& image, size_t width, size_t height)
 	{
 		return Image();
 	}
 
 	Image
-	image_resize(const Image & image, uint32_t width, uint32_t height, SCALLING_ALGORITHM algorithm)
+	image_resize(const Image & image, size_t width, size_t height, SCALLING_ALGORITHM algorithm)
 	{
 		switch (algorithm)
 		{
@@ -353,4 +353,18 @@ namespace immagine
 			return Image();
 		}
 	}
+
+	Image
+	image_crop(const Image & image, size_t x, size_t y, size_t width, size_t height)
+	{
+		Image self = image_new(width, height, image.channels);
+
+		for (uint8_t k = 0; k < self.channels; ++k)
+			for (size_t i = y; i < y + height; ++i)
+				for (size_t j = x; j < x + width; ++j)
+					self(i - y, j - x, k) = image(i, j, k);
+
+		return self;
+	}
+
 }

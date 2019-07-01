@@ -38,9 +38,9 @@ enum SCALLING_ALGORITHM
 	BICUBIC
 };
 
-struct COLOR
+typedef struct TAG_COLOR
 {
 	Byte red;
 	Byte green;
 	Byte blue;
-};
+}COLOR;
