@@ -59,7 +59,7 @@ namespace immagine
 	}
 	
 	void
-	image_set_pixel(Image& image, size_t row, size_t column, COLOR color)
+	image_set_pixel(Image& image, size_t row, size_t column, Color color)
 	{
 		image(row, column, 0) = color.red;
 		image(row, column, 1) = color.green;

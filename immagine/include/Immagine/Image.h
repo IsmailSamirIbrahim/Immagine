@@ -54,7 +54,7 @@ namespace immagine
 	image_free(Image& image);
 
 	IMMAGINE_EXPORT void
-	image_set_pixel(Image& image, size_t row, size_t column, COLOR color);
+	image_set_pixel(Image& image, size_t row, size_t column, Color color);
 
 	inline static void
 	destruct(Image& image)

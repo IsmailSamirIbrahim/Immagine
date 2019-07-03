@@ -5,11 +5,15 @@ set(HEADER_FILES
 	include/Immagine/Exports.h
 	include/Immagine/Image.h
 	include/Immagine/Imagedef.h
+	include/Immagine/Quadtree.h
+	include/Immagine/Utils.h
 )
 
 # list the source files
 set(SOURCE_FILES
 	src/Immagine/Image.cpp
+	src/Immagine/Quadtree.cpp
+	src/Immagine/Utils.cpp
 )
 
 

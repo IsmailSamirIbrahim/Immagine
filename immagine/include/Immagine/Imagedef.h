@@ -11,15 +11,15 @@
 #endif // !WHITE
 
 #ifndef RED
-#define RED COLOR{255, 0, 0}
+#define RED Color{255, 0, 0}
 #endif // !RED
 
 #ifndef GREEN
-#define GREEN COLOR{0, 255, 0}
+#define GREEN Color{0, 255, 0}
 #endif // !GREEN
 
 #ifndef BLUE
-#define BLUE COLOR{0, 0, 255}
+#define BLUE Color{0, 0, 255}
 #endif // !BLUE
 
 typedef unsigned char Byte;
@@ -43,4 +43,12 @@ typedef struct TAG_COLOR
 	Byte red;
 	Byte green;
 	Byte blue;
-}COLOR;
+}Color;
+
+typedef struct TAG_REGION
+{
+	size_t x;
+	size_t y;
+	size_t width;
+	size_t height;
+}Region;
