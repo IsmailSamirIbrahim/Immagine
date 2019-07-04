@@ -12,12 +12,9 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	Image img = image_load("D:/test.bmp");
-	
 	auto start = high_resolution_clock::now();
 
 	//type code here.
-	Quadtree q = quadtree_build(img, Region{ 0, 0, img.width, img.height });
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
