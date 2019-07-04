@@ -14,7 +14,7 @@ namespace immagine
 
 		Kind kind;
 		Region region;
-		uint8_t value;
+		int8_t value;
 		Node octants[4];
 	};
 
@@ -27,8 +27,8 @@ namespace immagine
 		self->region = region;
 		self->value = -1;
 
-		for (uint8_t i = 0; i < 4; ++i)
-			self->octants[i] = nullptr;
+		for (Node octant: self->octants)
+			octant = nullptr;
 
 		return self;
 	}
@@ -43,8 +43,8 @@ namespace immagine
 			break;
 
 		case INode::KIND_NON_LEAF:
-			for (uint8_t i = 0; i < 4; ++i)
-				node_free(node);
+			for (Node octant: node->octants)
+				node_free(octant);
 			::free(node);
 			break;
 
@@ -74,8 +74,8 @@ namespace immagine
 			node->octants[2] = node_new(INode::KIND_NON_LEAF, Region{ region.x, region.y + region.height / 2, region.width / 2, region.height - region.height / 2 });
 			node->octants[3] = node_new(INode::KIND_NON_LEAF, Region{ region.x + region.width / 2, region.y + region.height / 2, region.width - region.width / 2, region.height - region.height / 2 });
 
-			for (uint8_t i = 0; i < 4; ++i)
-				node_root_build(node->octants[i], image);
+			for (Node octant: node->octants)
+				node_root_build(octant, image);
 		}
 	}
 
