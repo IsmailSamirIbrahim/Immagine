@@ -222,6 +222,25 @@ namespace immagine
 	}
 
 	Image
+	image_binarize(const Image& image)
+	{
+		assert(image.channels == 1 && "Image must be gray level image\n");
+
+		Image self = image_new(image.width, image.height, image.channels);
+
+		size_t size = image.width * image.height * image.channels;
+		size_t sum = 0;
+		for (size_t i = 0; i < size; ++i)
+			sum += image.data[i];
+
+		uint8_t threshold = ((float)sum / (float)size + 0.5f);
+		for (size_t i = 0; i < size; ++i)
+			self.data[i] = (image.data[i] > threshold) ? WHITE : BLACK;
+
+		return self;
+	}
+
+	Image
 	image_flip_horizontally(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);

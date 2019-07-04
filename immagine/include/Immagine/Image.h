@@ -86,6 +86,9 @@ namespace immagine
 	image_gray_scale(const Image& image);
 
 	IMMAGINE_EXPORT Image
+	image_binarize(const Image& image);
+
+	IMMAGINE_EXPORT Image
 	image_flip_horizontally(const Image& image);
 
 	IMMAGINE_EXPORT Image
