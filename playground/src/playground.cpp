@@ -13,6 +13,9 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
+	Image img = image_load("D:/very_big.jpg");
+	Image bin_img = image_binarize(image_gray_scale(img));
+
 	auto start = high_resolution_clock::now();
 
 	//type code here.
@@ -40,27 +43,22 @@ main(int argc, char** argv)
 
 	//quadtree_free(quadtree);
 
-	Image img = image_load("D:/test.bmp");
-
-	Image bin_img = image_binarize(image_gray_scale(img));
-
 	Quadtree quadtree = quadtree_build(bin_img);
 
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<seconds>(stop - start);
+	printf("Time = %lld  millisecond\n", duration.count());
 
 	std::vector<Region> regions = quadtree_simulate(quadtree, img);
-
 	for (Region region : regions)
 	{
 		if (region.width > 1 && region.height > 1)
 			draw_regione(img, region);
 	}
+
 	quadtree_free(quadtree);
 
-	image_save("D:/aaa.bmp", img, BMP);
-
-	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<seconds>(stop - start);
-	printf("Time = %lld  millisecond\n", duration.count());
+	image_save("D:/a.bmp", img, BMP);
 
 	return 0;
 }

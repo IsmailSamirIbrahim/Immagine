@@ -8,12 +8,12 @@ namespace immagine
 	inline static int8_t
 	node_is_leaf(const Image& image, Region region)
 	{
-		for (uint16_t i = region.y; i < region.y + region.height; ++i)
-			for (uint16_t j = region.x; j < region.x + region.width; ++j)
+		for (size_t i = region.y; i < region.y + region.height; ++i)
+			for (size_t j = region.x; j < region.x + region.width; ++j)
 				if (image(i, j, 0) != image(region.y, region.x, 0))
 					return -1;
 
-		return image(region.y, region.x, 0);
+		return image(region.y, region.x, 0) == 255 ? 1 : 0;
 	}
 
 	inline static void
@@ -26,7 +26,7 @@ namespace immagine
 			if (y0 == image.height)
 				--y0;
 
-			image(y0, j, 0) = 0;
+			image(y0, j, 0) = 255;
 			image(y0, j, 1) = 0;
 			image(y0, j, 2) = 0;
 		}
@@ -42,7 +42,7 @@ namespace immagine
 			if (y0 == image.height)
 				--y0;
 
-			image(i, x0, 0) = 0;
+			image(i, x0, 0) = 255;
 			image(i, x0, 1) = 0;
 			image(i, x0, 2) = 0;
 		}
