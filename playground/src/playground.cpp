@@ -35,9 +35,7 @@ main(int argc, char** argv)
 	image(2, 2, 0) = 1; image(2, 3, 0) = 0;
 	image(3, 2, 0) = 0; image(3, 3, 0) = 0;
 
-	Quadtree quadtree = quadtree_new(image);
-
-	quadtree_build(quadtree, image);
+	Quadtree quadtree = quadtree_build(image);
 
 	quadtree_free(quadtree);
 

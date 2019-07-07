@@ -15,7 +15,7 @@ namespace immagine
 		Kind kind;
 		Region region;
 		int8_t value;
-		Node octants[4];
+		Node childrens[4];
 	};
 
 	inline static Node
@@ -27,8 +27,8 @@ namespace immagine
 		self->region = region;
 		self->value = -1;
 
-		for (Node octant: self->octants)
-			octant = nullptr;
+		for (Node child: self->childrens)
+			child = nullptr;
 
 		return self;
 	}
@@ -43,8 +43,8 @@ namespace immagine
 			break;
 
 		case INode::KIND_NON_LEAF:
-			for (Node octant: node->octants)
-				node_free(octant);
+			for (Node child: node->childrens)
+				node_free(child);
 			::free(node);
 			break;
 
@@ -55,12 +55,12 @@ namespace immagine
 	}
 
 	inline static void
-	node_root_build(Node node, const Image& image)
+	node_build(Node node, const Image& image)
 	{
 		Region region = node->region;
 		int8_t value = node_is_leaf(image, region);
 
-		//quadtree stop branching when these conditions is true.
+		//quadtree stop branching when these conditions are true.
 		if (region.width == 1 || region.height == 1 || value != -1)
 		{
 			node->kind = INode::KIND_LEAF;
@@ -68,14 +68,14 @@ namespace immagine
 		}
 		else
 		{
-			//create the octants nodes for this Non-Leaf node
-			node->octants[0] = node_new(INode::KIND_NON_LEAF, Region{ region.x, region.y, region.width / 2, region.height / 2 });
-			node->octants[1] = node_new(INode::KIND_NON_LEAF, Region{ region.x + region.width / 2, region.y, region.width - region.width / 2, region.height / 2 });
-			node->octants[2] = node_new(INode::KIND_NON_LEAF, Region{ region.x, region.y + region.height / 2, region.width / 2, region.height - region.height / 2 });
-			node->octants[3] = node_new(INode::KIND_NON_LEAF, Region{ region.x + region.width / 2, region.y + region.height / 2, region.width - region.width / 2, region.height - region.height / 2 });
+			//create the childrens nodes for this Non-Leaf node
+			node->childrens[0] = node_new(INode::KIND_NON_LEAF, Region{ region.x, region.y, uint16_t(region.width / 2), uint16_t(region.height / 2) });
+			node->childrens[1] = node_new(INode::KIND_NON_LEAF, Region{ uint16_t(region.x + uint16_t(region.width / 2)), region.y, uint16_t(region.width - uint16_t(region.width / 2)), uint16_t(region.height / 2) });
+			node->childrens[2] = node_new(INode::KIND_NON_LEAF, Region{ region.x, uint16_t(region.y + uint16_t(region.height / 2)), uint16_t(region.width / 2), uint16_t(region.height - uint16_t(region.height / 2)) });
+			node->childrens[3] = node_new(INode::KIND_NON_LEAF, Region{ uint16_t(region.x + uint16_t(region.width / 2)), uint16_t(region.y + uint16_t(region.height / 2)), uint16_t(region.width - uint16_t(region.width / 2)), uint16_t(region.height - uint16_t(region.height / 2)) });
 
-			for (Node octant: node->octants)
-				node_root_build(octant, image);
+			for (Node child: node->childrens)
+				node_build(child, image);
 		}
 	}
 
@@ -86,11 +86,13 @@ namespace immagine
 	};
 	
 	Quadtree
-	quadtree_new(const Image& image)
+	quadtree_build(const Image& image)
 	{
 		Quadtree self = (Quadtree)::malloc(sizeof(IQuadtree));
 
 		self->root = node_new(INode::KIND_NON_LEAF, Region{ 0, 0, image.width, image.height });
+
+		node_build(self->root, image);
 
 		return self;
 	}
@@ -99,11 +101,5 @@ namespace immagine
 	quadtree_free(Quadtree quadtree)
 	{
 		node_free(quadtree->root);
-	}
-
-	void
-	quadtree_build(Quadtree quadtree, const Image& image)
-	{
-		node_root_build(quadtree->root, image);
 	}
 }

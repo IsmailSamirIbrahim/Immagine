@@ -10,11 +10,8 @@ namespace immagine
 	typedef struct IQuadtree* Quadtree;
 
 	IMMAGINE_EXPORT Quadtree
-	quadtree_new(const Image& image);
+	quadtree_build(const Image& image);
 
 	IMMAGINE_EXPORT void
 	quadtree_free(Quadtree quadtree);
-
-	IMMAGINE_EXPORT void
-	quadtree_build(Quadtree quadtree, const Image& image);
 }
