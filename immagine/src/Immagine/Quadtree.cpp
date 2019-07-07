@@ -1,5 +1,5 @@
 #include "Immagine/Quadtree.h"
-#include "Immagine\Utils.h"
+#include "Immagine/Utils.h"
 
 #include <stdlib.h>
 
@@ -69,12 +69,12 @@ namespace immagine
 		else
 		{
 			//create the childrens nodes for this Non-Leaf node
-			node->childrens[0] = node_new(INode::KIND_NON_LEAF, Region{ region.x, region.y, uint16_t(region.width / 2), uint16_t(region.height / 2) });
-			node->childrens[1] = node_new(INode::KIND_NON_LEAF, Region{ uint16_t(region.x + uint16_t(region.width / 2)), region.y, uint16_t(region.width - uint16_t(region.width / 2)), uint16_t(region.height / 2) });
-			node->childrens[2] = node_new(INode::KIND_NON_LEAF, Region{ region.x, uint16_t(region.y + uint16_t(region.height / 2)), uint16_t(region.width / 2), uint16_t(region.height - uint16_t(region.height / 2)) });
-			node->childrens[3] = node_new(INode::KIND_NON_LEAF, Region{ uint16_t(region.x + uint16_t(region.width / 2)), uint16_t(region.y + uint16_t(region.height / 2)), uint16_t(region.width - uint16_t(region.width / 2)), uint16_t(region.height - uint16_t(region.height / 2)) });
+			node->childrens[0] = node_new(INode::KIND_NON_LEAF, Region{ region.x, region.y, region.width / 2, region.height / 2 });
+			node->childrens[1] = node_new(INode::KIND_NON_LEAF, Region{ region.x + region.width / 2, region.y, region.width - region.width / 2, region.height / 2 });
+			node->childrens[2] = node_new(INode::KIND_NON_LEAF, Region{ region.x, region.y + region.height / 2, region.width / 2, region.height - region.height / 2 });
+			node->childrens[3] = node_new(INode::KIND_NON_LEAF, Region{ region.x + region.width / 2, region.y + region.height / 2, region.width - region.width / 2, region.height - region.height / 2 });
 
-			for (Node child: node->childrens)
+			for (Node child : node->childrens)
 				node_build(child, image);
 		}
 	}
@@ -95,6 +95,33 @@ namespace immagine
 		node_build(self->root, image);
 
 		return self;
+	}
+
+	inline static void
+	simulate(Node node, Image& image, std::vector<Region>& regions)
+	{
+		switch (node->kind)
+		{
+		case INode::KIND_LEAF:
+			regions.push_back(node->region);
+			break;
+
+		case INode::KIND_NON_LEAF:
+			for (Node child : node->childrens)
+				simulate(child, image, regions);
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	std::vector<Region>
+	quadtree_simulate(Quadtree Quadtree, Image& image)
+	{
+		std::vector<Region> regions;
+		simulate(Quadtree->root, image, regions);
+		return regions;
 	}
 
 	void

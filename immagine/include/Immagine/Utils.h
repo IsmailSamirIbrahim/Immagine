@@ -15,4 +15,47 @@ namespace immagine
 
 		return image(region.y, region.x, 0);
 	}
+
+	inline static void
+	draw_horizental_line(Image& image, size_t x0, size_t y0, size_t x1, size_t y1)
+	{
+		for (size_t j = x0; j < x1; ++j)
+		{
+			if (x0 == image.width)
+				--x0;
+			if (y0 == image.height)
+				--y0;
+
+			image(y0, j, 0) = 0;
+			image(y0, j, 1) = 0;
+			image(y0, j, 2) = 0;
+		}
+	}
+
+	inline static void
+	draw_vertical_line(Image& image, size_t x0, size_t y0, size_t x1, size_t y1)
+	{
+		for (size_t i = y0; i < y1; ++i)
+		{
+			if (x0 == image.width)
+				--x0;
+			if (y0 == image.height)
+				--y0;
+
+			image(i, x0, 0) = 0;
+			image(i, x0, 1) = 0;
+			image(i, x0, 2) = 0;
+		}
+	}
+
+	inline static void
+	draw_regione(Image& image, Region region)
+	{
+		draw_horizental_line(image, region.x, region.y, region.x + region.width, region.y);
+		draw_horizental_line(image, region.x, region.y + region.height, region.x + region.width, region.y + region.height);
+
+		draw_vertical_line(image, region.x, region.y, region.x, region.y + region.height);
+		draw_vertical_line(image, region.x + region.width, region.y, region.x + region.width, region.y + region.height);
+	}
+
 }
