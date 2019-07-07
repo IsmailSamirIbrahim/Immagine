@@ -8,33 +8,33 @@ namespace immagine
 	struct Image
 	{
 		Byte* data;
-		size_t width;
-		size_t height;
+		uint16_t width;
+		uint16_t height;
 		uint8_t channels;
 
 		Byte&
-		operator()(size_t row, size_t column)
+		operator()(uint16_t row, uint16_t column)
 		{
 			assert(row >= 0 && row < height && column >= 0 && column < width && "Index out of range.\n");
 			return data[row * width + column];
 		}
 
 		const Byte&
-		operator()(size_t row, size_t column) const
+		operator()(uint16_t row, uint16_t column) const
 		{
 			assert(row >= 0 && row < height && column >= 0 && column < width && "Index out of range.\n");
 			return data[row * width + column];
 		}
 
 		Byte&
-		operator()(size_t row, size_t column, uint8_t channel)
+		operator()(uint16_t row, uint16_t column, uint8_t channel)
 		{
 			assert(row >= 0 && row < height && column >= 0 && column < width && channel >= 0 && "Index out of range.\n");
 			return data[row * width + column + channel * width * height];
 		}
 
 		const Byte&
-		operator()(size_t row, size_t column, uint8_t channel) const
+		operator()(uint16_t row, uint16_t column, uint8_t channel) const
 		{
 			assert(row >= 0 && row < height && column >= 0 && column < width && channel >= 0 && "Index out of range.\n");
 			return data[row * width + column + channel * width * height];
@@ -42,19 +42,19 @@ namespace immagine
 	};
 
 	IMMAGINE_EXPORT Image
-	image_new(size_t width, size_t height, uint8_t channels = 1);
+	image_new(uint16_t width, uint16_t height, uint8_t channels = 1);
 
 	IMMAGINE_EXPORT Image
 	image_clone(const Image& image);
 
 	IMMAGINE_EXPORT Image
-	image_from_ptr(const void* data, size_t width, size_t height, uint8_t channels);
+	image_from_ptr(const void* data, uint16_t width, uint16_t height, uint8_t channels);
 
 	IMMAGINE_EXPORT void
 	image_free(Image& image);
 
 	IMMAGINE_EXPORT void
-	image_set_pixel(Image& image, size_t row, size_t column, Color color);
+	image_set_pixel(Image& image, uint16_t row, uint16_t column, Color color);
 
 	inline static void
 	destruct(Image& image)
@@ -104,9 +104,9 @@ namespace immagine
 	image_rotate_left(const Image& image);
 
 	IMMAGINE_EXPORT Image
-	image_resize(const Image& image, size_t width, size_t height, SCALLING_ALGORITHM algorithm = NEAREST_NEIGHBOUR);
+	image_resize(const Image& image, uint16_t width, uint16_t height, SCALLING_ALGORITHM algorithm = NEAREST_NEIGHBOUR);
 
 	IMMAGINE_EXPORT Image
-	image_crop(const Image& image, size_t x, size_t y, size_t width, size_t height);
+	image_crop(const Image& image, uint16_t x, uint16_t y, uint16_t width, uint16_t height);
 
 }

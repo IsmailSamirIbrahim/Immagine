@@ -12,7 +12,7 @@
 namespace immagine
 {
 	Image
-	image_new(size_t width, size_t height, uint8_t channels)
+	image_new(uint16_t width, uint16_t height, uint8_t channels)
 	{
 		assert(width != 0 && height != 0 && channels != 0 && "Width, height and channels must be grater than zero");
 
@@ -38,7 +38,7 @@ namespace immagine
 	}
 
 	Image
-	image_from_ptr(const void* data, size_t width, size_t height, uint8_t channels)
+	image_from_ptr(const void* data, uint16_t width, uint16_t height, uint8_t channels)
 	{
 		Image self = image_new(width, height, channels);
 
@@ -59,7 +59,7 @@ namespace immagine
 	}
 	
 	void
-	image_set_pixel(Image& image, size_t row, size_t column, Color color)
+	image_set_pixel(Image& image, uint16_t row, uint16_t column, Color color)
 	{
 		image(row, column, 0) = color.red;
 		image(row, column, 1) = color.green;
@@ -67,12 +67,12 @@ namespace immagine
 	}
 
 	inline static void
-	_image_data_parser(Byte* src, Byte* dst, size_t width, size_t height, uint8_t channels)
+	_image_data_parser(Byte* src, Byte* dst, uint16_t width, uint16_t height, uint8_t channels)
 	{
-		size_t j = 0;
-		size_t size = width * height * channels;
+		uint16_t j = 0;
+		uint16_t size = width * height * channels;
 		for (uint8_t c = 0; c < channels; ++c)
-			for (size_t i = c; i < size; i += channels)
+			for (uint16_t i = c; i < size; i += channels)
 				dst[j++] = src[i];
 	}
 
@@ -98,10 +98,10 @@ namespace immagine
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
-		size_t j = 0;
-		size_t size = image.width * image.height * image.channels;
+		uint16_t j = 0;
+		uint16_t size = image.width * image.height * image.channels;
 		for (uint8_t c = 0; c < image.channels; ++c)
-			for (size_t i = c; i < size; i += image.channels)
+			for (uint16_t i = c; i < size; i += image.channels)
 				self.data[i] = image.data[j++];
 
 		return self;
@@ -145,9 +145,9 @@ namespace immagine
 
 		Image self = image_new(image.width, image.height, 1);
 
-		size_t size = image.width * image.height;
-		size_t i = 0;
-		size_t j = 0;
+		uint16_t size = image.width * image.height;
+		uint16_t i = 0;
+		uint16_t j = 0;
 		while (size--)
 			self.data[i++] = image.data[j++];
 
@@ -161,9 +161,9 @@ namespace immagine
 
 		Image self = image_new(image.width, image.height, 1);
 
-		size_t size = image.width * image.height;
-		size_t i = 0;
-		size_t j = image.width * image.height;
+		uint16_t size = image.width * image.height;
+		uint16_t i = 0;
+		uint16_t j = image.width * image.height;
 		while (size--)
 			self.data[i++] = image.data[j++];
 
@@ -177,9 +177,9 @@ namespace immagine
 
 		Image self = image_new(image.width, image.height, 1);
 
-		size_t size = image.width * image.height;
-		size_t i = 0;
-		size_t j = image.width * image.height * 2;
+		uint16_t size = image.width * image.height;
+		uint16_t i = 0;
+		uint16_t j = image.width * image.height * 2;
 		while (size--)
 			self.data[i++] = image.data[j++];
 
@@ -193,9 +193,9 @@ namespace immagine
 
 		Image self = image_new(image.width, image.height, 1);
 
-		size_t size = image.width * image.height;
-		size_t i = 0;
-		size_t j = image.width * image.height * 3;
+		uint16_t size = image.width * image.height;
+		uint16_t i = 0;
+		uint16_t j = image.width * image.height * 3;
 		while (size--)
 			self.data[i++] = image.data[j++];
 
@@ -209,11 +209,11 @@ namespace immagine
 
 		Image self = image_new(image.width, image.height, 1);
 
-		size_t i = 0;
-		size_t r = 0;
-		size_t g = image.width * image.height;
-		size_t b = image.width * image.height * 2;
-		size_t size = image.width * image.height;
+		uint16_t i = 0;
+		uint16_t r = 0;
+		uint16_t g = image.width * image.height;
+		uint16_t b = image.width * image.height * 2;
+		uint16_t size = image.width * image.height;
 
 		while(size--)
 			self.data[i++] = Byte(float((image.data[r++]) + (image.data[g++]) + (image.data[b++])) / 3.0f);
@@ -228,13 +228,13 @@ namespace immagine
 
 		Image self = image_new(image.width, image.height, image.channels);
 
-		size_t size = image.width * image.height * image.channels;
-		size_t sum = 0;
-		for (size_t i = 0; i < size; ++i)
+		uint16_t size = image.width * image.height * image.channels;
+		uint16_t sum = 0;
+		for (uint16_t i = 0; i < size; ++i)
 			sum += image.data[i];
 
 		uint8_t threshold = ((float)sum / (float)size + 0.5f);
-		for (size_t i = 0; i < size; ++i)
+		for (uint16_t i = 0; i < size; ++i)
 			self.data[i] = (image.data[i] > threshold) ? WHITE : BLACK;
 
 		return self;
@@ -246,8 +246,8 @@ namespace immagine
 		Image self = image_new(image.width, image.height, image.channels);
 
 		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height; ++i)
-				for (size_t j = 0; j < image.width; ++j)
+			for (uint16_t i = 0; i < image.height; ++i)
+				for (uint16_t j = 0; j < image.width; ++j)
 					self(i, j, k) = image(i, image.width - 1 - j, k);
 
 		return self;
@@ -259,8 +259,8 @@ namespace immagine
 		Image self = image_new(image.width, image.height, image.channels);
 
 		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height; ++i)
-				for (size_t j = 0; j < image.width; ++j)
+			for (uint16_t i = 0; i < image.height; ++i)
+				for (uint16_t j = 0; j < image.width; ++j)
 					self(i, j, k) = image(image.height - 1 - i, j, k);
 
 		return self;
@@ -278,8 +278,8 @@ namespace immagine
 		Image self = image_new(image.height, image.width, image.channels);
 
 		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height; ++i)
-				for (size_t j = 0; j < image.width; ++j)
+			for (uint16_t i = 0; i < image.height; ++i)
+				for (uint16_t j = 0; j < image.width; ++j)
 					self(j, image.height - 1 - i, k) = image(i, j, k);
 
 		return self;
@@ -291,15 +291,15 @@ namespace immagine
 		Image self = image_new(image.height, image.width, image.channels);
 
 		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height; ++i)
-				for (size_t j = 0; j < image.width; ++j)
+			for (uint16_t i = 0; i < image.height; ++i)
+				for (uint16_t j = 0; j < image.width; ++j)
 					self(image.width - 1 - j, i, k) = image(i, j, k);
 
 		return self;
 	}
 
 	Image
-	_image_nearest_neighbour_algorithm(const Image& image, size_t width, size_t height)
+	_image_nearest_neighbour_algorithm(const Image& image, uint16_t width, uint16_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
@@ -307,15 +307,15 @@ namespace immagine
 		float height_ratio = (float)image.height / (float)height;
 
 		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < height; ++i)
-				for (size_t j = 0; j < width; ++j)
-					self(i, j, k) = image(size_t(floor(i * height_ratio)), size_t(floor(j * width_ratio)), k);
+			for (uint16_t i = 0; i < height; ++i)
+				for (uint16_t j = 0; j < width; ++j)
+					self(i, j, k) = image(uint16_t(floor(i * height_ratio)), uint16_t(floor(j * width_ratio)), k);
 
 		return self;
 	}
 
 	Image
-	_image_bilinear_algorithm(const Image& image, size_t width, size_t height)
+	_image_bilinear_algorithm(const Image& image, uint16_t width, uint16_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
@@ -323,11 +323,11 @@ namespace immagine
 		float height_ratio = (float)image.height / (float)height;
 
 		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < height - 1; ++i)
-				for (size_t j = 0; j < width - 1; ++j)
+			for (uint16_t i = 0; i < height - 1; ++i)
+				for (uint16_t j = 0; j < width - 1; ++j)
 				{
-					size_t src_i = (size_t)(i * height_ratio);
-					size_t src_j = (size_t)(j * width_ratio);
+					uint16_t src_i = (uint16_t)(i * height_ratio);
+					uint16_t src_j = (uint16_t)(j * width_ratio);
 
 					float x_dist = (width_ratio  * j) - src_j;
 					float y_dist = (height_ratio * i) - src_i;
@@ -348,13 +348,13 @@ namespace immagine
 	}
 
 	Image
-	_image_bicubic_algorithm(const Image& image, size_t width, size_t height)
+	_image_bicubic_algorithm(const Image& image, uint16_t width, uint16_t height)
 	{
 		return Image();
 	}
 
 	Image
-	image_resize(const Image & image, size_t width, size_t height, SCALLING_ALGORITHM algorithm)
+	image_resize(const Image & image, uint16_t width, uint16_t height, SCALLING_ALGORITHM algorithm)
 	{
 		switch (algorithm)
 		{
@@ -374,13 +374,13 @@ namespace immagine
 	}
 
 	Image
-	image_crop(const Image & image, size_t x, size_t y, size_t width, size_t height)
+	image_crop(const Image & image, uint16_t x, uint16_t y, uint16_t width, uint16_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
 		for (uint8_t k = 0; k < self.channels; ++k)
-			for (size_t i = y; i < y + height; ++i)
-				for (size_t j = x; j < x + width; ++j)
+			for (uint16_t i = y; i < y + height; ++i)
+				for (uint16_t j = x; j < x + width; ++j)
 					self(i - y, j - x, k) = image(i, j, k);
 
 		return self;
