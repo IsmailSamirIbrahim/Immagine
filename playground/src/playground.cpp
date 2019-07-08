@@ -14,7 +14,6 @@ int
 main(int argc, char** argv)
 {
 	Image img = image_load("D:/very_big.jpg");
-	Image bin_img = image_binarize(image_gray_scale(img));
 
 	auto start = high_resolution_clock::now();
 
@@ -43,11 +42,12 @@ main(int argc, char** argv)
 
 	//quadtree_free(quadtree);
 
-	Quadtree quadtree = quadtree_build(bin_img);
+
+	Quadtree quadtree = quadtree_build(img);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
-	printf("Time = %lld  millisecond\n", duration.count());
+	printf("Time = %lld  second\n", duration.count());
 
 	std::vector<Region> regions = quadtree_simulate(quadtree, img);
 	for (Region region : regions)
@@ -58,7 +58,7 @@ main(int argc, char** argv)
 
 	quadtree_free(quadtree);
 
-	image_save("D:/a.bmp", img, BMP);
+	image_save("D:/aaa.bmp", img, BMP);
 
 	return 0;
 }

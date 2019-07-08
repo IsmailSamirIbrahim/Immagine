@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#define THRESHOLD 0.6
+#define THRESHOLD 25
 namespace immagine
 {
 	//Quadtree

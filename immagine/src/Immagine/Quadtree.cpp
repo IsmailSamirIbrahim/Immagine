@@ -13,8 +13,8 @@ namespace immagine
 		enum Kind { KIND_NONE, KIND_NON_LEAF, KIND_LEAF };
 
 		Kind kind;
+		Color color;
 		Region region;
-		int8_t value;
 		Node childrens[4];
 	};
 
@@ -24,9 +24,9 @@ namespace immagine
 		Node self = (Node)::malloc(sizeof(INode));
 
 		self->kind = kind;
+		self->color = Color{ 0, 0, 0 };
 		self->region = region;
-		self->value = -1;
-
+		
 		for (Node child: self->childrens)
 			child = nullptr;
 
@@ -58,13 +58,13 @@ namespace immagine
 	node_build(Node node, const Image& image)
 	{
 		Region region = node->region;
-		int8_t value = node_is_leaf(image, region);
+		float measure_detail = region_measure_detail(image, region);
 
 		//quadtree stop branching when these conditions are true.
-		if (region.width == 1 || region.height == 1 || value != -1)
+		if (/*region.width == 1 || region.height == 1 || */measure_detail < THRESHOLD)
 		{
 			node->kind = INode::KIND_LEAF;
-			node->value = value;
+			node->color = regione_average_color(image, region);
 		}
 		else
 		{

@@ -3,8 +3,45 @@
 #include "Immagine/Image.h"
 #include "Immagine/Imagedef.h"
 
+#include <algorithm>
+
 namespace immagine
 {
+
+	inline static Color
+	regione_average_color(const Image& image, Region region)
+	{
+		uint32_t color[3] = { 0, 0, 0 };
+
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = region.y; i < region.y + region.height; ++i)
+				for (size_t j = region.x; j < region.x + region.width; ++j)
+					color[k] += image(i, j, k);
+
+		uint32_t region_area = region.width * region.height;
+
+		return Color{ Byte(color[0] / region_area), Byte(color[1] / region_area), Byte(color[2] / region_area) };
+	}
+
+	inline static float
+	region_measure_detail(const Image& image, Region region)
+	{
+		Color average_color = regione_average_color(image, region);
+
+		Byte color[3] = { average_color.red, average_color.green, average_color.blue };
+
+		float manhattan_distance = 0.0f;
+
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = region.y; i < region.y + region.height; ++i)
+				for (size_t j = region.x; j < region.x + region.width; ++j)
+					manhattan_distance += std::abs(color[k] - image(i, j, k));
+
+		float average_manhattan_distance = manhattan_distance / (3 * region.width * region.height);
+		
+		return average_manhattan_distance;
+	}
+
 	inline static int8_t
 	node_is_leaf(const Image& image, Region region)
 	{
