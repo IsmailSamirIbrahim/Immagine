@@ -373,23 +373,32 @@ namespace immagine
 	image_blur(const Image& image, uint8_t size, IMAGE_FILTERS type)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
-		
+
 		Mask mask = mask_generate(size, type);
 
-		for (uint8_t k = 0; k < self.channels; ++k)
-			for (size_t i = 1; i < self.height - 1; ++i)
-				for (size_t j = 1; j < self.width - 1; ++j)
-				{
-					float value = 0.0f;	
-					for (int8_t n = -1; n <= 1; ++n)
-						for (int8_t m = -1; m <= 1; ++m)
-							value += float(image(i + n, j + m, k)) * float(mask(n + 1, m + 1));
+		for (uint8_t k = 0; k < image.channels; ++k) {
+			for (size_t i = 0; i < self.height; ++i) {
+				for (size_t j = 0; j < self.width; ++j) {
+					float value = 0.0f;
+					for (int8_t n = -1; n <= 1; ++n) {
+						for (int8_t m = -1; m <= 1; ++m) {
+							size_t r = i + n;
+							size_t c = j + m;
 
-					value /= float(size * size);
+							r = r < 0 ? 0 : r;
+							c = c < 0 ? 0 : c;
 
-					self(i, j, k) = value;
+							r = r >= image.height ? image.height - 1 : r;
+							c = c >= image.width ? image.width - 1 : c;
+
+							value += float(image(r, c, k)) * mask(n + 1, m + 1);
+						}
+					}
+					printf("value = %f\n", value);
+					self(i, j, k) = Byte(value);
 				}
-
+			}
+		}
 		maske_free(mask);
 
 		return self;

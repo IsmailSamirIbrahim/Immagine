@@ -16,7 +16,7 @@ main(int argc, char** argv)
 	auto start = high_resolution_clock::now();
 
 	//type code here.
-	Image image = image_blur(img, 3, MEAN_FILTER);
+	Image image = image_blur(img, 5, MEAN_FILTER);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
