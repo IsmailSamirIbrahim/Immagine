@@ -11,12 +11,12 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	Image img = image_load("D:/fruits.bmp");
+	Image img = image_load("D:/10.png");
 	
 	auto start = high_resolution_clock::now();
 
 	//type code here.
-	Image image = image_blur(img, 5, MEAN_FILTER);
+	Image image = image_blur(img, 17, MEAN_FILTER);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);

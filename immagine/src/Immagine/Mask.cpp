@@ -22,7 +22,6 @@ namespace immagine
 	{
 		Mask self = mask_new(size, size);
 
-		
 		float val = 1.0f / float(size * size);
 
 		for (uint8_t i = 0; i < self.height; ++i)

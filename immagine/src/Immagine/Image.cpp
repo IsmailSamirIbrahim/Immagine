@@ -376,25 +376,21 @@ namespace immagine
 
 		Mask mask = mask_generate(size, type);
 
-		for (uint8_t k = 0; k < image.channels; ++k) {
+		for (uint8_t k = 0; k < self.channels; ++k) {
 			for (size_t i = 0; i < self.height; ++i) {
 				for (size_t j = 0; j < self.width; ++j) {
 					float value = 0.0f;
-					for (int8_t n = -1; n <= 1; ++n) {
-						for (int8_t m = -1; m <= 1; ++m) {
+					for (uint8_t n = 0; n < size; ++n) {
+						for (uint8_t m = 0; m < size; ++m) {
 							size_t r = i + n;
 							size_t c = j + m;
-
-							r = r < 0 ? 0 : r;
-							c = c < 0 ? 0 : c;
 
 							r = r >= image.height ? image.height - 1 : r;
 							c = c >= image.width ? image.width - 1 : c;
 
-							value += float(image(r, c, k)) * mask(n + 1, m + 1);
+							value += float(image(r, c, k)) * mask(n, m);
 						}
 					}
-					printf("value = %f\n", value);
 					self(i, j, k) = Byte(value);
 				}
 			}
