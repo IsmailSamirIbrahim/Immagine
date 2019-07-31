@@ -2,6 +2,9 @@
 #include <stdint.h>
 #include <assert.h>
 
+namespace immagine
+{
+
 #ifndef BLACK
 #define BLACK 0
 #endif // !BLACK
@@ -22,25 +25,20 @@
 #define BLUE COLOR{0, 0, 255}
 #endif // !BLUE
 
-typedef unsigned char Byte;
+	enum class IMAGE_FORMAT { BMP, PNG, JPEG };
 
-enum IMAGE_FORMAT
-{
-	BMP,
-	PNG,
-	JPEG
-};
+	enum class SCALLING_ALGORITHM { NEAREST_NEIGHBOUR, BILINEAR, BICUBIC };
 
-enum SCALLING_ALGORITHM
-{
-	NEAREST_NEIGHBOUR,
-	BILINEAR,
-	BICUBIC
-};
+	typedef struct TAG_RGB_COLOR{
+		uint8_t r;
+		uint8_t g;
+		uint8_t b;
+	}RGB_COLOR;
 
-typedef struct TAG_COLOR
-{
-	Byte red;
-	Byte green;
-	Byte blue;
-}COLOR;
+	typedef struct TAG_RGBA_COLOR {
+		uint8_t r;
+		uint8_t g;
+		uint8_t b;
+		uint8_t a;
+	}RGBA_COLOR;
+}

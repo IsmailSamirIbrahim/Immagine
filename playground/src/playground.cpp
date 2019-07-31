@@ -16,13 +16,15 @@ main(int argc, char** argv)
 	auto start = high_resolution_clock::now();
 
 	//type code here.
-	Image image = image_crop(img, 2500, 4300, 1000, 1000);
+	Image image = image_gray_scale(img);
+
+	Image rotate_left = image_rotate_left(image);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
 	printf("Time = %lld  millisecond\n", duration.count());
 
-	image_save("D:/test.bmp", image, BMP);
+	image_save("D:/rotate.bmp", rotate_left, IMAGE_FORMAT::BMP);
 
 	return 0;
 }
