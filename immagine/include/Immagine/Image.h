@@ -7,34 +7,34 @@ namespace immagine
 {
 	struct Image
 	{
-		Byte* data;
-		size_t width;
-		size_t height;
+		uint32_t width;
+		uint32_t height;
 		uint8_t channels;
+		uint8_t* data;
 
-		Byte&
-		operator()(size_t row, size_t column)
+		uint8_t&
+		operator()(uint32_t row, uint32_t column)
 		{
 			assert(row >= 0 && row < height && column >= 0 && column < width && "Index out of range.\n");
 			return data[row * width + column];
 		}
 
-		const Byte&
-		operator()(size_t row, size_t column) const
+		const uint8_t&
+		operator()(uint32_t row, uint32_t column) const
 		{
 			assert(row >= 0 && row < height && column >= 0 && column < width && "Index out of range.\n");
 			return data[row * width + column];
 		}
 
-		Byte&
-		operator()(size_t row, size_t column, uint8_t channel)
+		uint8_t&
+		operator()(uint32_t row, uint32_t column, uint8_t channel)
 		{
 			assert(row >= 0 && row < height && column >= 0 && column < width && channel >= 0 && "Index out of range.\n");
 			return data[row * width + column + channel * width * height];
 		}
 
-		const Byte&
-		operator()(size_t row, size_t column, uint8_t channel) const
+		const uint8_t&
+		operator()(uint32_t row, uint32_t column, uint8_t channel) const
 		{
 			assert(row >= 0 && row < height && column >= 0 && column < width && channel >= 0 && "Index out of range.\n");
 			return data[row * width + column + channel * width * height];
@@ -42,19 +42,16 @@ namespace immagine
 	};
 
 	IMMAGINE_EXPORT Image
-	image_new(size_t width, size_t height, uint8_t channels = 1);
+	image_new(uint32_t width, uint32_t height, uint8_t channels);
 
 	IMMAGINE_EXPORT Image
 	image_clone(const Image& image);
 
 	IMMAGINE_EXPORT Image
-	image_from_ptr(const void* data, size_t width, size_t height, uint8_t channels);
+	image_from_ptr(const void* data, uint32_t width, uint32_t height, uint8_t channels);
 
 	IMMAGINE_EXPORT void
 	image_free(Image& image);
-
-	IMMAGINE_EXPORT void
-	image_set_pixel(Image& image, size_t row, size_t column, COLOR color);
 
 	inline static void
 	destruct(Image& image)
@@ -86,9 +83,6 @@ namespace immagine
 	image_gray_scale(const Image& image);
 
 	IMMAGINE_EXPORT Image
-	image_binarize(const Image& image);
-
-	IMMAGINE_EXPORT Image
 	image_flip_horizontally(const Image& image);
 
 	IMMAGINE_EXPORT Image
@@ -104,9 +98,9 @@ namespace immagine
 	image_rotate_left(const Image& image);
 
 	IMMAGINE_EXPORT Image
-	image_resize(const Image& image, size_t width, size_t height, SCALLING_ALGORITHM algorithm = NEAREST_NEIGHBOUR);
+	image_resize(const Image& image, uint32_t width, uint32_t height, SCALLING_ALGORITHM algorithm);
 
 	IMMAGINE_EXPORT Image
-	image_crop(const Image& image, size_t x, size_t y, size_t width, size_t height);
+	image_crop(const Image& image, uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
 }
