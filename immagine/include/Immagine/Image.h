@@ -103,4 +103,6 @@ namespace immagine
 	IMMAGINE_EXPORT Image
 	image_crop(const Image& image, uint32_t x, uint32_t y, uint32_t width, uint32_t height);
 
+	IMMAGINE_EXPORT Image
+	image_blur(const Image& image, uint8_t size = 3, IMAGE_FILTERS type = IMAGE_FILTERS::MEAN_FILTER);
 }

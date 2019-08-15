@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Immagine/Image.h"
+#include "Immagine/Mask.h"
+
 #include <algorithm>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -367,4 +369,34 @@ namespace immagine
 		return self;
 	}
 
+	Image
+	image_blur(const Image& image, uint8_t size, IMAGE_FILTERS type)
+	{
+		Image self = image_new(image.width, image.height, image.channels);
+
+		Mask mask = mask_generate(size, type);
+
+		for (uint8_t k = 0; k < self.channels; ++k) {
+			for (size_t i = 0; i < self.height; ++i) {
+				for (size_t j = 0; j < self.width; ++j) {
+					float value = 0.0f;
+					for (uint8_t n = 0; n < size; ++n) {
+						for (uint8_t m = 0; m < size; ++m) {
+							size_t r = i + n;
+							size_t c = j + m;
+
+							r = r >= image.height ? image.height - 1 : r;
+							c = c >= image.width ? image.width - 1 : c;
+
+							value += float(image(r, c, k)) * mask(n, m);
+						}
+					}
+					self(i, j, k) = uint8_t(value);
+				}
+			}
+		}
+		maske_free(mask);
+
+		return self;
+	}
 }

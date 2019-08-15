@@ -11,20 +11,18 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	Image img = image_load("D:/very_big.jpg");
+	Image img = image_load("E:/1.bmp");
 	
 	auto start = high_resolution_clock::now();
 
 	//type code here.
-	Image image = image_gray_scale(img);
-
-	Image rotate_left = image_rotate_left(image);
-
+	Image image = image_blur(img, 17, IMAGE_FILTERS::MEAN_FILTER);
+	
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
 	printf("Time = %lld  millisecond\n", duration.count());
 
-	image_save("D:/rotate.bmp", rotate_left, IMAGE_FORMAT::BMP);
+	image_save("E:/blured.bmp", image, IMAGE_FORMAT::BMP);
 
 	return 0;
 }

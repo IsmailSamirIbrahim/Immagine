@@ -29,7 +29,16 @@ namespace immagine
 
 	enum class SCALLING_ALGORITHM { NEAREST_NEIGHBOUR, BILINEAR, BICUBIC };
 
-	typedef struct TAG_RGB_COLOR{
+	enum class IMAGE_FILTERS
+	{
+		MEAN_FILTER,
+		BOX_FILTER,
+		AVG_FILTER,
+		WEIGHTED_AVG_FILTER,
+		GAUSSIAN_FILTER
+	};
+
+	typedef struct TAG_RGB_COLOR {
 		uint8_t r;
 		uint8_t g;
 		uint8_t b;
@@ -41,4 +50,12 @@ namespace immagine
 		uint8_t b;
 		uint8_t a;
 	}RGBA_COLOR;
+
+	typedef struct TAG_COLOR
+	{
+		uint8_t red;
+		uint8_t green;
+		uint8_t blue;
+	}COLOR;
+
 }
