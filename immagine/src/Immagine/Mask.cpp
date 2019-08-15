@@ -36,13 +36,13 @@ namespace immagine
 	{
 		switch (type)
 		{
-		case MEAN_FILTER:
-		case BOX_FILTER:
-		case AVG_FILTER:
+		case IMAGE_FILTERS::MEAN_FILTER:
+		case IMAGE_FILTERS::BOX_FILTER:
+		case IMAGE_FILTERS::AVG_FILTER:
 			return _mask_box_generate(size);
-		case WEIGHTED_AVG_FILTER:
+		case IMAGE_FILTERS::WEIGHTED_AVG_FILTER:
 			break;
-		case GAUSSIAN_FILTER:
+		case IMAGE_FILTERS::GAUSSIAN_FILTER:
 			break;
 		default:
 			break;
