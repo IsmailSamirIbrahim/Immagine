@@ -2,11 +2,12 @@
 
 #include "Immagine/Exports.h"
 #include "Immagine/Imagedef.h"
-#include "Immagine/Image.h"
+
+#include <assert.h>
 
 namespace immagine
 {
-	struct Mask
+	struct Kernel
 	{
 		float* data;
 		uint8_t width;
@@ -27,12 +28,12 @@ namespace immagine
 		}
 	};
 
-	IMMAGINE_EXPORT Mask
-	mask_new(uint8_t width, uint8_t height);
+	IMMAGINE_EXPORT Kernel
+	kernel_new(uint8_t width, uint8_t height);
 
-	IMMAGINE_EXPORT Mask
-	mask_generate(uint8_t size, IMAGE_FILTERS type);
+	IMMAGINE_EXPORT Kernel
+	kernel_from_ptr(const void* data, uint8_t width, uint8_t height);
 
 	IMMAGINE_EXPORT void
-	maske_free(Mask mask);
+	kernel_free(Kernel& kernel);
 }

@@ -3,14 +3,16 @@
 #include "Immagine/Exports.h"
 #include "Immagine/Imagedef.h"
 
+#include <assert.h>
+
 namespace immagine
 {
 	struct Image
 	{
+		uint8_t* data;
 		uint32_t width;
 		uint32_t height;
 		uint8_t channels;
-		uint8_t* data;
 
 		uint8_t&
 		operator()(uint32_t row, uint32_t column)
@@ -29,14 +31,14 @@ namespace immagine
 		uint8_t&
 		operator()(uint32_t row, uint32_t column, uint8_t channel)
 		{
-			assert(row >= 0 && row < height && column >= 0 && column < width && channel >= 0 && "Index out of range.\n");
+			assert(row >= 0 && row < height && column >= 0 && column < width && channel > 0 && "Index out of range.\n");
 			return data[row * width + column + channel * width * height];
 		}
 
 		const uint8_t&
 		operator()(uint32_t row, uint32_t column, uint8_t channel) const
 		{
-			assert(row >= 0 && row < height && column >= 0 && column < width && channel >= 0 && "Index out of range.\n");
+			assert(row >= 0 && row < height && column >= 0 && column < width && channel > 0 && "Index out of range.\n");
 			return data[row * width + column + channel * width * height];
 		}
 	};
@@ -63,7 +65,7 @@ namespace immagine
 	image_load(const char* file_path);
 
 	IMMAGINE_EXPORT bool
-	image_save(const char* file_path, const Image& image, IMAGE_FORMAT kind);
+	image_save(const char* file_path, const Image& image, FORMAT format);
 
 	/*Get specific channel*/
 	IMMAGINE_EXPORT Image
@@ -80,7 +82,7 @@ namespace immagine
 
 	/*Basic Transformations*/
 	IMMAGINE_EXPORT Image
-	image_gray_scale(const Image& image);
+	image_grayscale(const Image& image);
 
 	IMMAGINE_EXPORT Image
 	image_flip_horizontally(const Image& image);
@@ -98,11 +100,8 @@ namespace immagine
 	image_rotate_left(const Image& image);
 
 	IMMAGINE_EXPORT Image
-	image_resize(const Image& image, uint32_t width, uint32_t height, SCALLING_ALGORITHM algorithm);
+	image_resize(const Image& image, uint32_t width, uint32_t height, INTERPOLATION_METHOD method);
 
 	IMMAGINE_EXPORT Image
-	image_crop(const Image& image, uint32_t x, uint32_t y, uint32_t width, uint32_t height);
-
-	IMMAGINE_EXPORT Image
-	image_blur(const Image& image, uint8_t size = 3, IMAGE_FILTERS type = IMAGE_FILTERS::MEAN_FILTER);
+	image_crop(const Image& image, const Rectangle& rect);
 }
