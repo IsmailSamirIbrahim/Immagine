@@ -31,14 +31,14 @@ namespace immagine
 		uint8_t&
 		operator()(uint32_t row, uint32_t column, uint8_t channel)
 		{
-			assert(row >= 0 && row < height && column >= 0 && column < width && channel > 0 && "Index out of range.\n");
+			assert(row >= 0 && row < height && column >= 0 && column < width && channel >= 0 && "Index out of range.\n");
 			return data[row * width + column + channel * width * height];
 		}
 
 		const uint8_t&
 		operator()(uint32_t row, uint32_t column, uint8_t channel) const
 		{
-			assert(row >= 0 && row < height && column >= 0 && column < width && channel > 0 && "Index out of range.\n");
+			assert(row >= 0 && row < height && column >= 0 && column < width && channel >= 0 && "Index out of range.\n");
 			return data[row * width + column + channel * width * height];
 		}
 	};
