@@ -391,4 +391,19 @@ namespace immagine
 		return self;
 	}
 
+	Image
+	image_pad(const Image& image, uint32_t expand_w, uint32_t expand_h, uint8_t val)
+	{
+		Image self = image_new(image.width + 2 * expand_w, image.height + 2 * expand_h, image.channels);
+
+		::memset(self.data, val, self.width * self.height * self.channels);
+
+		for (uint8_t k = 0; k < self.channels; ++k)
+			for (size_t i = expand_h; i < self.height - expand_h; ++i)
+				for (size_t j = expand_w; j < self.width - expand_w; ++j)
+					self(i, j, k) = image(i - expand_h, j - expand_w, k);
+
+		return self;
+	}
+
 }

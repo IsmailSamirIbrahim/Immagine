@@ -104,4 +104,7 @@ namespace immagine
 
 	IMMAGINE_EXPORT Image
 	image_crop(const Image& image, const Rectangle& rect);
+
+	IMMAGINE_EXPORT Image
+	image_pad(const Image& image, uint32_t expand_w, uint32_t expand_h, uint8_t val);
 }

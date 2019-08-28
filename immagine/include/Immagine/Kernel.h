@@ -2,6 +2,7 @@
 
 #include "Immagine/Exports.h"
 #include "Immagine/Imagedef.h"
+#include <Immagine/Image.h>
 
 #include <assert.h>
 
@@ -36,4 +37,8 @@ namespace immagine
 
 	IMMAGINE_EXPORT void
 	kernel_free(Kernel& kernel);
+
+	IMMAGINE_EXPORT Image
+	kernel_conv(const Kernel& kernel, const Image& image);
+
 }
