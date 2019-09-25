@@ -1,5 +1,5 @@
 # Immagine
-This is my fucken image processing library using C/C++
+This is my fucking image processing library using C/C++
 
 ## Issue-Management board
 Issue managment is done on [Trello](https://trello.com/b/5EedQabb)
