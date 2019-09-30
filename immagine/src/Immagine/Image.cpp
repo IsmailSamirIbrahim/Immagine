@@ -137,6 +137,8 @@ namespace immagine
 		self.channels = channels;
 		self.data = (uint8_t*)::malloc(width * height * channels * sizeof(uint8_t));
 
+		::memset(self.data, 0, width * height * channels);
+
 		return self;
 	}
 

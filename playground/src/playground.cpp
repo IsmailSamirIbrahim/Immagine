@@ -13,13 +13,13 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	Image image = image_load("E:/a.jpg");
+	Image image = image_load("E:/a.png");
 	
 	auto start = high_resolution_clock::now();
 
 	//type code here.
 	
-	Kernel kernel = kernel_new(3, 3);
+	Kernel kernel = kernel_new(21, 21);
 	float val = (1.0f / (kernel.width * kernel.height));
 	for (int i = 0; i < kernel.width * kernel.height; ++i)
 		kernel.data[i] = val;
@@ -30,7 +30,7 @@ main(int argc, char** argv)
 	auto duration = duration_cast<seconds>(stop - start);
 	printf("Time = %lld  millisecond\n", duration.count());
 
-	image_save("D:/Ismail/convolved_image.bmp", img1, FORMAT::BMP);
+	image_save("E:/convolved_image.bmp", img1, FORMAT::BMP);
 
 	image_free(image);
 	image_free(img1);
