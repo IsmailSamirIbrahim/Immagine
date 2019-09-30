@@ -13,20 +13,18 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	Image image = image_load("D:/Ismail/fruits.bmp");
+	Image image = image_load("E:/a.jpg");
 	
 	auto start = high_resolution_clock::now();
 
 	//type code here.
 	
-	Kernel kernel = kernel_new(21, 21);
+	Kernel kernel = kernel_new(3, 3);
 	float val = (1.0f / (kernel.width * kernel.height));
 	for (int i = 0; i < kernel.width * kernel.height; ++i)
 		kernel.data[i] = val;
 
 	Image img1 = kernel_conv(kernel, image);
-
-	//Image img1 = image_pad(image, 50, 5, 0);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
