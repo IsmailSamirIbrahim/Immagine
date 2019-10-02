@@ -37,13 +37,19 @@ namespace immagine
 	kernel_conv_horizental(const Kernel& kernel, const Image& image, Image& self)
 	{
 		uint32_t offset = kernel.width / 2;
+
+		Image padded_image = image_pad(image, offset, 0, 0);
+
+		size_t nh = padded_image.height - (kernel.height / 2);
+		size_t nw = padded_image.width - (kernel.width / 2);
+
 		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height; ++i)
-				for (size_t j = 0; j < image.width - kernel.width; ++j) {
+			for (size_t i = (kernel.height / 2); i < nh; ++i)
+				for (size_t j = (kernel.width / 2); j < nw; ++j) {
 					float val = 0.0f;
 					for (size_t x = 0; x < kernel.width; ++x)
-						val += image(i, j + x, k) * kernel.data[x];
-					self(i, j + offset, k) = uint8_t(val);
+						val += padded_image(i, j + x - kernel.width / 2, k) * kernel.data[x];
+					self(i, j - offset, k) = uint8_t(val);
 				}
 	}
 
@@ -51,13 +57,18 @@ namespace immagine
 	kernel_conv_vertical(const Kernel& kernel, const Image& image, Image& self)
 	{
 		uint32_t offset = kernel.height / 2;
+		Image padded_image = image_pad(image, 0, offset, 0);
+
+		size_t nh = padded_image.height - (kernel.height / 2);
+		size_t nw = padded_image.width - (kernel.width / 2);
+
 		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height - kernel.height; ++i)
-				for (size_t j = 0; j < image.width; ++j) {
+			for (size_t i = (kernel.height / 2); i < nh; ++i)
+				for (size_t j = (kernel.width / 2); j < nw; ++j) {
 					float val = 0.0f;
 					for (size_t x = 0; x < kernel.height; ++x)
-						val += image(i + x, j, k) * kernel.data[x];
-					self(i + offset, j, k) = uint8_t(val);
+						val += padded_image(i + x - kernel.height / 2, j, k) * kernel.data[x];
+					self(i - offset, j, k) = uint8_t(val);
 				}
 	}
 
