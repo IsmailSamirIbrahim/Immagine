@@ -1,6 +1,7 @@
 #include "Immagine/Kernel.h"
 #include <memory>
 #include <vector>
+#include <omp.h>
 
 using namespace std;
 
@@ -98,7 +99,7 @@ namespace immagine
 	}
 
 	inline static uint32_t
-	calcMean(size_t i, size_t j, size_t k, size_t kernel_height, size_t kernel_width, const vector<vector<vector<uint32_t>>>& summed_table)
+	calculate_mean(size_t i, size_t j, size_t k, size_t kernel_height, size_t kernel_width, const vector<vector<vector<uint32_t>>>& summed_table)
 	{
 		uint32_t mean = 0;
 		if (i > 0 && j > 0)
@@ -125,10 +126,10 @@ namespace immagine
 		size_t width_offset = kernel.width / 2;
 		size_t height_offset = kernel.height / 2;
 
-		for (uint8_t k = 0; k < image.channels; ++k)
+		for (int8_t k = 0; k < image.channels; ++k)
 			for (size_t i = 0; i < image.height - kernel.height; ++i)
 				for (size_t j = 0; j < image.width - kernel.width; ++j)
-					self(i + height_offset, j + width_offset, k) = calcMean(i, j, k, kernel.height, kernel.width, summed_table);
+					self(i + height_offset, j + width_offset, k) = calculate_mean(i, j, k, kernel.height, kernel.width, summed_table);
 
 		return self;
 	}
