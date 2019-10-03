@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Immagine/Exports.h"
-#include "Immagine/Imagedef.h"
-#include <Immagine/Image.h>
 
+#include <stdint.h>
 #include <assert.h>
 
 namespace immagine
@@ -38,7 +37,7 @@ namespace immagine
 	IMMAGINE_EXPORT void
 	kernel_free(Kernel& kernel);
 
-	IMMAGINE_EXPORT Image
-	kernel_conv(const Kernel& kernel, const Image& image);
+	IMMAGINE_EXPORT Kernel
+	kernel_box_gen(size_t width, size_t height);
 
 }

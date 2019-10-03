@@ -65,7 +65,7 @@ namespace immagine
 	image_load(const char* file_path);
 
 	IMMAGINE_EXPORT bool
-	image_save(const char* file_path, const Image& image, FORMAT format);
+	image_save(const char* file_path, const Image& image, IMAGE_FORMAT format);
 
 	/*Get specific channel*/
 	IMMAGINE_EXPORT Image
@@ -104,6 +104,12 @@ namespace immagine
 
 	IMMAGINE_EXPORT Image
 	image_crop(const Image& image, const Rectangle& rect);
+
+	inline static Image
+	image_crop(const Image& image, uint32_t x, uint32_t y, uint32_t width, uint32_t height)
+	{
+		image_crop(image, Rectangle{ x, y, width, height });
+	}
 
 	IMMAGINE_EXPORT Image
 	image_pad(const Image& image, uint32_t expand_w, uint32_t expand_h, uint8_t val);

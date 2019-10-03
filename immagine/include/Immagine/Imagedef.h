@@ -13,10 +13,9 @@ namespace immagine
 #define WHITE 255
 #endif // !WHITE
 
+	enum class IMAGE_FORMAT { BMP, PNG, JPEG };
 
-	enum class FORMAT { BMP, PNG, JPEG };
-
-	enum class INTERPOLATION_METHOD { NEAREST_NEIGHBOUR, BILINEAR, BICUBIC };
+	enum class INTERPOLATION_METHOD { NEAREST_NEIGHBOUR, BILINEAR };
 
 	struct RGB{
 		uint8_t r;

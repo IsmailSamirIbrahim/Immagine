@@ -7,6 +7,8 @@ set(HEADER_FILES
 	include/Immagine/Imagedef.h
 	include/Immagine/Kernel.h
 	include/Immagine/Point_Processing.h
+	include/Immagine/Convolution.h
+	include/Immagine/Utilities.h
 )
 
 # list the source files
@@ -14,6 +16,7 @@ set(SOURCE_FILES
 	src/Immagine/Image.cpp
 	src/Immagine/Kernel.cpp
 	src/Immagine/Point_Processing.cpp
+	src/Immagine/Convolution.cpp
 )
 
 

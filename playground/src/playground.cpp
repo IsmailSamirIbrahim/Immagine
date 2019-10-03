@@ -2,7 +2,7 @@
 
 #include "Immagine/Image.h"
 #include "Immagine/Point_Processing.h"
-#include "Immagine/Kernel.h"
+#include "Immagine/Convolution.h"
 
 #include <chrono>
 
@@ -19,18 +19,13 @@ main(int argc, char** argv)
 
 	//type code here.
 	
-	Kernel kernel = kernel_new(201, 201);
-	float val = (1.0f / (kernel.width * kernel.height));
-	for (int i = 0; i < kernel.width * kernel.height; ++i)
-		kernel.data[i] = val;
-
-	Image img1 = kernel_conv(kernel, image);
+	Image img1 = image_box_filter(image, 21, 21);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	printf("Time = %lld  milliseconds\n", duration.count());
 
-	image_save("D:/Ismail/images/convolved_image.bmp", img1, FORMAT::BMP);
+	image_save("D:/Ismail/images/convolved_image.bmp", img1, IMAGE_FORMAT::BMP);
 
 	image_free(image);
 	image_free(img1);

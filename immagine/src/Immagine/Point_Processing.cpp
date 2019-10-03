@@ -1,9 +1,5 @@
 #include "Immagine/Point_Processing.h"
 
-#include <iostream>
-
-#include <cmath>
-
 namespace immagine
 {
 	Image

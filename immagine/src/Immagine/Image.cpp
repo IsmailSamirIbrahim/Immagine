@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Immagine/Image.h"
-#include "Immagine/Kernel.h"
-
-#include <algorithm>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -119,12 +116,6 @@ namespace immagine
 		return self;
 	}
 
-	inline static Image
-	_image_resize_bicubic(const Image& image, uint32_t width, uint32_t height)
-	{
-		return Image();
-	}
-
 
 	// API
 	Image
@@ -186,22 +177,22 @@ namespace immagine
 	}
 
 	bool
-	image_save(const char* file_path, const Image& image, FORMAT format)
+	image_save(const char* file_path, const Image& image, IMAGE_FORMAT format)
 	{
 		Image self = _image_data_join(image);
 
 		bool result;
 		switch (format)
 		{
-		case FORMAT::BMP:
+		case IMAGE_FORMAT::BMP:
 			result = stbi_write_bmp(file_path, int(self.width), int(self.height), int(self.channels), self.data);
 			break;
 
-		case FORMAT::PNG:
+		case IMAGE_FORMAT::PNG:
 			result = stbi_write_png(file_path, int(self.width), int(self.height), int(self.channels), self.data, 0);
 			break;
 
-		case FORMAT::JPEG:
+		case IMAGE_FORMAT::JPEG:
 			result = stbi_write_jpg(file_path, int(self.width), int(self.height), int(self.channels), self.data, 0);
 			break;
 
@@ -370,9 +361,6 @@ namespace immagine
 
 		case INTERPOLATION_METHOD::BILINEAR:
 			return _image_resize_bilinear(image, width, height);
-
-		case INTERPOLATION_METHOD::BICUBIC:
-			return _image_resize_bicubic(image, width, height);
 
 		default:
 			assert(false && "Unreachable state");
