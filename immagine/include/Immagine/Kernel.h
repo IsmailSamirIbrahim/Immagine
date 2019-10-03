@@ -40,4 +40,7 @@ namespace immagine
 	IMMAGINE_EXPORT Kernel
 	kernel_box_gen(size_t width, size_t height);
 
+	IMMAGINE_EXPORT Kernel
+	kernel_gaussian_gen(size_t width, size_t height, float standard_deviation, float sigma);
+
 }

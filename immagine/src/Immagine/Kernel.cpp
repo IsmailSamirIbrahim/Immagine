@@ -4,6 +4,8 @@
 
 using namespace std;
 
+#define M_PI	3.14159265358979323846  
+
 namespace immagine
 {
 	Kernel
@@ -45,6 +47,33 @@ namespace immagine
 		size_t size = width * height;
 		for (size_t i = 0; i < size; ++i)
 			self.data[i] = val;
+
+		return self;
+	}
+
+	Kernel
+	kernel_gaussian_gen(size_t width, size_t height, float standard_deviation, float sigma)
+	{
+		Kernel self = kernel_new(width, height);
+
+		int offset = width / 2;
+		float s = sigma * standard_deviation * standard_deviation;
+		float r;
+		float sum = 0.0;   // Initialization of sum for normalization
+		for (int x = -1 * offset; x <= offset; x++) // Loop to generate WxH kernel
+		{
+			for (int y = -1 * offset; y <= offset; y++)
+			{
+				r = sqrt(x*x + y * y);
+				self(x + offset, y + offset) = (exp(-(r*r) / s)) / (M_PI * s);
+				sum += self(x + offset, y + offset);
+			}
+		}
+
+		// Loop to normalize the kernel
+		for (int i = 0; i < self.height; ++i)
+			for (int j = 0; j < self.width; ++j)
+				self(i, j) /= sum;
 
 		return self;
 	}
