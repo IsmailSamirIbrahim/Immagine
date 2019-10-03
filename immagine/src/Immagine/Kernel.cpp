@@ -1,5 +1,6 @@
 #include "Immagine/Kernel.h"
 #include <memory>
+#include <omp.h>
 
 namespace immagine
 {
@@ -45,7 +46,8 @@ namespace immagine
 		size_t nh = padded_image.height - (kernel.height / 2);
 		size_t nw = padded_image.width - (kernel.width / 2);
 
-		for (uint8_t k = 0; k < image.channels; ++k){
+#pragma omp parallel for
+		for (int8_t k = 0; k < image.channels; ++k){
 			for (size_t i = (kernel.height / 2); i < nh; ++i){
 				for (size_t j = (kernel.width / 2); j < nw; ++j){
 					float val = 0.0f;
