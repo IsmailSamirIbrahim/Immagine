@@ -52,12 +52,12 @@ namespace immagine
 	}
 
 	Kernel
-	kernel_gaussian_gen(size_t width, size_t height, float standard_deviation, float sigma)
+	kernel_gaussian_gen(size_t width, size_t height, float standard_deviation)
 	{
 		Kernel self = kernel_new(width, height);
 
 		int offset = width / 2;
-		float s = sigma * standard_deviation * standard_deviation;
+		float s = standard_deviation * standard_deviation;
 		float r;
 		float sum = 0.0;   // Initialization of sum for normalization
 		for (int x = -1 * offset; x <= offset; x++) // Loop to generate WxH kernel
