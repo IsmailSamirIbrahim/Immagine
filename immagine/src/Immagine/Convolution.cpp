@@ -78,34 +78,64 @@ namespace immagine
 		return self;
 	}
 
+	inline static uint8_t
+	median_get(map<uint8_t, size_t>& hist, size_t middle)
+	{
+		map<uint8_t, size_t>::iterator it = hist.begin();
+		size_t sum = 0;
+		for (; it != hist.end(); ++it)
+		{
+			sum += it->second;
+			if (sum >= middle)
+				break;
+		}
+
+		return it->first;
+	}
+
+	inline static void
+	hist_remove(map<uint8_t, size_t>& hist, uint8_t val)
+	{
+		map<uint8_t, size_t>::iterator it = hist.find(val);
+		if (it != hist.end())
+		{
+			if (it->second > 1)
+				--it->second;
+			else
+				hist.erase(it);
+		}
+	}
+	
+	inline static void
+	hist_add(map<uint8_t, size_t>& hist, uint8_t val)
+	{
+		hist[val]++;
+	}
+
 	Image
 	image_median_filter(const Image& image, size_t kernel_width, size_t kernel_height)
 	{
-		Image self = image_new(image.width, image.height, image.channels);
+		Image self = image_new(image.width, image.height, 1);
 
+		size_t middle = (kernel_width * kernel_height) / 2 + 1;
 		map<uint8_t, size_t> hist;
-		size_t offset = kernel_height / 2;
-		size_t middle = (kernel_height * kernel_width / 2) + 1;
-		for (size_t k = 0; k < image.channels; ++k) {
-			for (size_t i = 0; i < image.height - offset - 1; ++i) {
-				for (size_t j = 0; j < image.width - offset - 1; ++j) 
+
+		for (size_t i = 0; i < kernel_height; ++i)
+			for (size_t j = 0; j < kernel_width; ++j)
+				++hist[image(i, j)];
+
+		self(kernel_height / 2, kernel_width / 2) = median_get(hist, middle);
+
+		size_t rad = kernel_height / 2.0f;
+		for (size_t i = 0; i < image.height - kernel_height; ++i) {
+			for (size_t j = 0; j < image.width - kernel_width; ++j) {
+				for (size_t r = 0; r < kernel_height; ++r)
 				{
-					for (size_t r = 0; r < kernel_height; ++r)
-						for (size_t c = 0; c < kernel_width; ++c)
-							++hist[image(i + r, j + c, k)];
-
-					size_t sum = 0;
-					map<uint8_t, size_t>::iterator it;
-					for (it = hist.begin(); it != hist.end(); ++it)
-					{
-						sum += it->second;
-						if (sum >= middle)
-							break;
-					}
-
-					self(i + offset, j + offset, k) = it->first;
-					hist.clear();
+					//remove first column
+					hist_remove(hist, image(i + r, j));
+					hist_add(hist, image(i + r, j + kernel_width));
 				}
+				self(i + rad, j + rad) = median_get(hist, middle);
 			}
 		}
 
