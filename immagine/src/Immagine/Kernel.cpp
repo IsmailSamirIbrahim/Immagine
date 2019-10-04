@@ -1,6 +1,7 @@
 #include "Immagine/Kernel.h"
 
 #include <memory>
+#include <cmath>
 
 using namespace std;
 
@@ -51,31 +52,24 @@ namespace immagine
 		return self;
 	}
 
-	Kernel
-	kernel_gaussian_gen(size_t width, size_t height, float standard_deviation)
+	int*
+	kernel_gaussian_gen(float sigma, size_t n)
 	{
-		Kernel self = kernel_new(width, height);
+		float wIdeal = sqrt((12 * sigma*sigma / n) + 1);  // Ideal averaging filter width 
+		size_t wl = floor(wIdeal);
+		if (wl % 2 == 0)
+			wl--;
 
-		int offset = width / 2;
-		float s = standard_deviation * standard_deviation;
-		float r;
-		float sum = 0.0;   // Initialization of sum for normalization
-		for (int x = -1 * offset; x <= offset; x++) // Loop to generate WxH kernel
-		{
-			for (int y = -1 * offset; y <= offset; y++)
-			{
-				r = sqrt(x*x + y * y);
-				self(x + offset, y + offset) = (exp(-(r*r) / s)) / (M_PI * s);
-				sum += self(x + offset, y + offset);
-			}
-		}
+		size_t wu = wl + 2;
 
-		// Loop to normalize the kernel
-		for (int i = 0; i < self.height; ++i)
-			for (int j = 0; j < self.width; ++j)
-				self(i, j) /= sum;
+		float mIdeal = (12 * sigma*sigma - n * wl*wl - 4 * n*wl - 3 * n) / (-4 * wl - 4);
+		size_t m = round(mIdeal);
+		
+		int* sizes = (int*)::malloc(n * sizeof(int));
+		for (size_t i = 0; i < n; i++)
+			sizes[i] = (i < m ? wl : wu);
 
-		return self;
+		return sizes;
 	}
 
 }
