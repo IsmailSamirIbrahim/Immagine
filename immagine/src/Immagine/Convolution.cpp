@@ -13,43 +13,63 @@ typedef vector<uint32_t> vec1ui;
 namespace immagine
 {
 	// Helper Functions
-	inline static void
-	_image_filter_horizental(const Kernel& kernel, const Image& image, Image& self)
+	Image
+	image_filter_horizental(const Image& image, size_t kernel_width)
 	{
-		uint32_t offset = kernel.width / 2;
+		Image self = image_new(image.width, image.height, image.channels);
 
-		Image padded_image = image_pad(image, offset, 0, 0);
+		Kernel kernel = kernel_box_gen(kernel_width, 1);
 
-		size_t nh = padded_image.height - (kernel.height / 2);
-		size_t nw = padded_image.width - (kernel.width / 2);
+		size_t offset = kernel_width / 2;
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = 0; i < image.height; ++i)
+				for (size_t j = 0; j < image.width - kernel_width + 1; ++j) {
+					float val = 0.0f;
+					for (size_t x = 0; x < kernel_width; ++x)
+						val += image(i, j + x, k) * kernel.data[x];
+					self(i, j + offset, k) = uint8_t(val);
+				}
+
+		//handle edges  left/right
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = 0; i < image.height; ++i)
+				for (size_t j = offset; j > 0; --j) {
+					float val = 0.0f;
+					for (size_t x = 0; x < kernel_width; ++x)
+						val += image(i, j + x, k) * kernel.data[x];
+					self(i, j - 1, k) = uint8_t(val);
+				}
 
 		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = (kernel.height / 2); i < nh; ++i)
-				for (size_t j = (kernel.width / 2); j < nw; ++j) {
+			for (size_t i = 0; i < image.height; ++i)
+				for (size_t j = image.width - kernel_width - 1; j < image.width - 1; ++j) {
 					float val = 0.0f;
-					for (size_t x = 0; x < kernel.width; ++x)
-						val += padded_image(i, j + x - kernel.width / 2, k) * kernel.data[x];
-					self(i, j - offset, k) = uint8_t(val);
+					for (size_t x = 0; x < kernel_width; ++x)
+						val += image(i, j - x, k) * kernel.data[x];
+					self(i, j + 1, k) = uint8_t(val);
 				}
+
+		return self;
 	}
 
-	inline static void
-	_image_filter_vertical(const Kernel& kernel, const Image& image, Image& self)
+	Image
+	image_filter_vertical(const Image& image, size_t kernel_height)
 	{
-		uint32_t offset = kernel.height / 2;
-		Image padded_image = image_pad(image, 0, offset, 0);
+		Image self = image_new(image.width, image.height, image.channels);
 
-		size_t nh = padded_image.height - (kernel.height / 2);
-		size_t nw = padded_image.width - (kernel.width / 2);
+		Kernel kernel = kernel_box_gen(1, kernel_height);
 
+		size_t offset = kernel_height / 2;
 		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = (kernel.height / 2); i < nh; ++i)
-				for (size_t j = (kernel.width / 2); j < nw; ++j) {
+			for (size_t i = 0; i < image.height - kernel_height + 1; ++i)
+				for (size_t j = 0; j < image.width; ++j) {
 					float val = 0.0f;
-					for (size_t x = 0; x < kernel.height; ++x)
-						val += padded_image(i + x - kernel.height / 2, j, k) * kernel.data[x];
-					self(i - offset, j, k) = uint8_t(val);
+					for (size_t x = 0; x < kernel_height; ++x)
+						val += image(i + x, j, k) * kernel.data[x];
+					self(i + offset, j, k) = uint8_t(val);
 				}
+
+		return self;
 	}
 
 
