@@ -59,20 +59,20 @@ namespace immagine
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
+		Image padded_image = image_pad(image, kernel_width / 2, kernel_height / 2, 0);
+
+		vec3ui summed_table(padded_image.height, vec2ui(padded_image.width, vec1ui(padded_image.channels)));
+		calculate_summed_area(padded_image, summed_table);
+
 		Kernel kernel = kernel_box_gen(kernel_width, kernel_height);
 
-		vec3ui summed_table(image.height, vec2ui(image.width, vec1ui(image.channels)));
-		calculate_summed_area(image, summed_table);
-
-		size_t width_offset = kernel.width / 2;
-		size_t height_offset = kernel.height / 2;
-
-		for (int8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height - kernel.height; ++i)
-				for (size_t j = 0; j < image.width - kernel.width; ++j)
-					self(i + height_offset, j + width_offset, k) = calculate_mean(i, j, k, kernel.height, kernel.width, summed_table);
+		for (uint8_t k = 0; k < padded_image.channels; ++k)
+			for (size_t i = 0; i < padded_image.height - kernel_height + 1; ++i)
+				for (size_t j = 0; j < padded_image.width - kernel_width + 1; ++j)
+					self(i, j, k) = calculate_mean(i, j, k, kernel.height, kernel.width, summed_table);
 
 		kernel_free(kernel);
+		image_free(padded_image);
 
 		return self;
 	}
