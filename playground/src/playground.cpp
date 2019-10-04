@@ -21,17 +21,15 @@ main(int argc, char** argv)
 
 	//type code here.
 	
-	Image img = image_box_filter(image, 51, 51);
-	Image img1 = image_filter_vertical(img, 51);
-	
+	Image img = image_gaussian_filter(image, 12.0f);
+
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	printf("Time = %lld  milliseconds\n", duration.count());
 
-	image_save("E:/convolved_image.bmp", img1, IMAGE_FORMAT::BMP);
+	image_save("E:/convolved_image.bmp", img, IMAGE_FORMAT::BMP);
 
 	image_free(image);
-	image_free(img1);
 	image_free(img);
 
 	return 0;
