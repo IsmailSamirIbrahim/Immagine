@@ -6,7 +6,7 @@
 
 #include <chrono>
 
-//#include <vld.h>
+#include <vld.h>
 
 using namespace std::chrono;
 using namespace immagine;
@@ -21,8 +21,9 @@ main(int argc, char** argv)
 
 	//type code here.
 	
-	Image img1 = image_box_filter(image, 91, 91);
-
+	Image img = image_box_filter(image, 51, 51);
+	Image img1 = image_filter_vertical(img, 51);
+	
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	printf("Time = %lld  milliseconds\n", duration.count());
@@ -31,6 +32,7 @@ main(int argc, char** argv)
 
 	image_free(image);
 	image_free(img1);
+	image_free(img);
 
 	return 0;
 }
