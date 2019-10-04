@@ -18,36 +18,24 @@ namespace immagine
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
+		int32_t offset = kernel_width / 2;
+		Image p_image = image_pad(image, offset, 0, image(0, 0));
+		
 		Kernel kernel = kernel_box_gen(kernel_width, 1);
 
-		size_t offset = kernel_width / 2;
-		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height; ++i)
-				for (size_t j = 0; j < image.width - kernel_width + 1; ++j) {
+		size_t nw = p_image.width - (kernel_width / 2);
+
+		for (uint8_t k = 0; k < p_image.channels; ++k)
+			for (size_t i = 0; i < p_image.height; ++i)
+				for (size_t j = offset; j < nw; ++j) {
 					float val = 0.0f;
 					for (size_t x = 0; x < kernel_width; ++x)
-						val += image(i, j + x, k) * kernel.data[x];
-					self(i, j + offset, k) = uint8_t(val);
+						val += p_image(i, j + x - offset, k) * kernel.data[x];
+					self(i, j - offset, k) = uint8_t(val);
 				}
 
-		//handle edges  left/right
-		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height; ++i)
-				for (size_t j = offset; j > 0; --j) {
-					float val = 0.0f;
-					for (size_t x = 0; x < kernel_width; ++x)
-						val += image(i, j + x, k) * kernel.data[x];
-					self(i, j - 1, k) = uint8_t(val);
-				}
-
-		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height; ++i)
-				for (size_t j = image.width - kernel_width - 1; j < image.width - 1; ++j) {
-					float val = 0.0f;
-					for (size_t x = 0; x < kernel_width; ++x)
-						val += image(i, j - x, k) * kernel.data[x];
-					self(i, j + 1, k) = uint8_t(val);
-				}
+		image_free(p_image);
+		kernel_free(kernel);
 
 		return self;
 	}
@@ -57,21 +45,27 @@ namespace immagine
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
+		int32_t offset = kernel_height / 2;
+		Image p_image = image_pad(image, 0, offset, image(0, 0));
+
 		Kernel kernel = kernel_box_gen(1, kernel_height);
 
-		size_t offset = kernel_height / 2;
-		for (uint8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height - kernel_height + 1; ++i)
-				for (size_t j = 0; j < image.width; ++j) {
+		size_t nh = p_image.height - (kernel_height / 2);
+
+		for (uint8_t k = 0; k < p_image.channels; ++k)
+			for (size_t i = offset; i < nh; ++i)
+				for (size_t j = 0; j < p_image.width; ++j) {
 					float val = 0.0f;
 					for (size_t x = 0; x < kernel_height; ++x)
-						val += image(i + x, j, k) * kernel.data[x];
-					self(i + offset, j, k) = uint8_t(val);
+						val += p_image(i + x - offset, j, k) * kernel.data[x];
+					self(i - offset, j, k) = uint8_t(val);
 				}
+
+		image_free(p_image);
+		kernel_free(kernel);
 
 		return self;
 	}
-
 
 	// API
 	Image
@@ -79,7 +73,7 @@ namespace immagine
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
-		Image padded_image = image_pad(image, kernel_width / 2, kernel_height / 2, 0);
+		Image padded_image = image_pad(image, kernel_width / 2, kernel_height / 2, image(0, 0));
 
 		vec3ui summed_table(padded_image.height, vec2ui(padded_image.width, vec1ui(padded_image.channels)));
 		calculate_summed_area(padded_image, summed_table);
