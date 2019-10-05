@@ -21,7 +21,7 @@ main(int argc, char** argv)
 
 	//type code here.
 	
-	Image img1 = image_median_filter(image, 51, 51);
+	Image img1 = image_median_filter(image, 9, 9);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);

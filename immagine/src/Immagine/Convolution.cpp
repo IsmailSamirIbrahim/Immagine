@@ -107,31 +107,32 @@ namespace immagine
 	}
 
 	inline static void
-	window_reset(map<uint8_t, size_t>& hist, const Image& image, size_t kernel_width, size_t kernel_height, size_t i)
+	window_reset(map<uint8_t, size_t>& hist, const Image& image, size_t kernel_width, size_t kernel_height, size_t i, size_t k)
 	{
 		hist.clear();
 		for (size_t r = 0; r < kernel_height; ++r)
 			for (size_t c = 0; c < kernel_width; ++c)
-				hist_add(hist, image(r + i, c, 0));
+				hist_add(hist, image(r + i, c, k));
 	}
 
 	Image
 	image_median_filter(const Image& image, size_t kernel_width, size_t kernel_height)
 	{
-		Image self = image_new(image.width, image.height, 1);
+		Image self = image_new(image.width, image.height, image.channels);
 
 		map<uint8_t, size_t> hist;
 		size_t middle = (kernel_width * kernel_height) / 2 + 1;
 
+		for(size_t k = 0; k < image.channels; ++k)
 		for (size_t i = 0; i < image.height - kernel_height + 1; ++i) {
-			window_reset(hist, image, kernel_width, kernel_height, i);
+			window_reset(hist, image, kernel_width, kernel_height, i, k);
 			for (size_t j = 0; j < image.width - kernel_width + 1; ++j) {
 				for (size_t r = 0; r < kernel_height; ++r)
 				{
-					hist_remove(hist, image(i + r, j));
-					hist_add(hist, image(i + r, j + kernel_width, 0));
+					hist_remove(hist, image(i + r, j, k));
+					hist_add(hist, image(i + r, j + kernel_width, k));
 				}
-				self(i + kernel_height / 2, j + kernel_width / 2, 0) = median_get(hist, middle);
+				self(i + kernel_height / 2, j + kernel_width / 2, k) = median_get(hist, middle);
 			}
 		}
 
