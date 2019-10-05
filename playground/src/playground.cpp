@@ -15,13 +15,13 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	Image image = image_load("E:/b.bmp");
+	Image image = image_load("E:/2.jpg");
 	
 	auto start = high_resolution_clock::now();
 
 	//type code here.
 	
-	Image img1 = image_median_filter(image, 9, 9);
+	Image img1 = image_median_filter(image, 51, 51);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
