@@ -15,7 +15,7 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	Image image = image_load("E:/a.png");
+	Image image = image_load("E:/b.bmp");
 	
 	auto start = high_resolution_clock::now();
 

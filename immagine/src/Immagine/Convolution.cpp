@@ -129,7 +129,7 @@ namespace immagine
 				for (size_t r = 0; r < kernel_height; ++r)
 				{
 					hist_remove(hist, image(i + r, j));
-					hist_add(hist, image(i + r, j + ((kernel_width / 2) + 1), 0));
+					hist_add(hist, image(i + r, j + kernel_width, 0));
 				}
 				self(i + kernel_height / 2, j + kernel_width / 2, 0) = median_get(hist, middle);
 			}
