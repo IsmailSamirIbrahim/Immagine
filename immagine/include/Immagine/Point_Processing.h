@@ -13,4 +13,14 @@ namespace immagine
 
 	IMMAGINE_EXPORT Image
 	image_negative(const Image& image);
+
+	IMMAGINE_EXPORT Image
+	image_logarithm(const Image& image);
+
+	IMMAGINE_EXPORT Image
+	image_logarithm_inv(const Image& image);
+
+	IMMAGINE_EXPORT Image
+	image_gamma(const Image& image, float gamma);
+
 }

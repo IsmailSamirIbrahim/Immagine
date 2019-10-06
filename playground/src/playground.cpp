@@ -15,14 +15,14 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	string file_path = string(IMAGE_DIR) + string("/images/fruits.bmp");
+	string file_path = string(IMAGE_DIR) + string("/images/a.png");
 	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
 
 	//type code here.
 	
-	Image img = image_binarize(image);
+	Image img = image_gamma(image, 5.0f);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
