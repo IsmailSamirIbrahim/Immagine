@@ -123,18 +123,16 @@ namespace immagine
 		map<uint8_t, size_t> hist;
 		size_t middle = (kernel_width * kernel_height) / 2 + 1;
 
-		Image p_image = image_pad(image, kernel_width / 2, kernel_height / 2, 0);
-
 		for (int8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < p_image.height - kernel_height + 1; ++i) {
-				window_reset(hist, p_image, kernel_width, kernel_height, i, k);
-				for (size_t j = 0; j < p_image.width - kernel_width + 1; ++j) {
+			for (size_t i = 0; i < image.height - kernel_height + 1; ++i) {
+				window_reset(hist, image, kernel_width, kernel_height, i, k);
+				for (size_t j = 0; j < image.width - kernel_width; ++j) {
 					for (size_t r = 0; r < kernel_height; ++r)
 					{
-						hist_remove(hist, p_image(i + r, j, k));
-						hist_add(hist, p_image(i + r, j + kernel_width, k));
+						hist_remove(hist, image(i + r, j, k));
+						hist_add(hist, image(i + r, j + kernel_width, k));
 					}
-					self(i, j, k) = median_get(hist, middle);
+					self(i + kernel_height / 2, j + kernel_width / 2, k) = median_get(hist, middle);
 				}
 			}
 
