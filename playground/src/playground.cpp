@@ -5,7 +5,7 @@
 #include "Immagine/Convolution.h"
 
 #include <chrono>
-
+#include <string>
 #include <vld.h>
 
 using namespace std::chrono;
@@ -15,19 +15,21 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	Image image = image_load("E:/a.png");
+	string file_path = string(IMAGE_DIR) + string("/images/fruits.bmp");
+	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
 
 	//type code here.
 	
-	Image img = image_gaussian_filter(image, 12.0f);
+	Image img = image_binarize(image);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	printf("Time = %lld  milliseconds\n", duration.count());
 
-	image_save("E:/convolved_image.bmp", img, IMAGE_FORMAT::BMP);
+	string out_path = string(IMAGE_DIR) + string("/images/binraized.bmp");
+	image_save(out_path.c_str(), img, IMAGE_FORMAT::BMP);
 
 	image_free(image);
 	image_free(img);

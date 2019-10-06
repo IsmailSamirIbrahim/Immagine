@@ -113,4 +113,7 @@ namespace immagine
 
 	IMMAGINE_EXPORT Image
 	image_pad(const Image& image, uint32_t expand_w, uint32_t expand_h, uint8_t val);
+
+	IMMAGINE_EXPORT Image
+	image_binarize(const Image& image);
 }
