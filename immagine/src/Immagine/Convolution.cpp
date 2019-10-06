@@ -126,7 +126,7 @@ namespace immagine
 		for (int8_t k = 0; k < image.channels; ++k)
 			for (size_t i = 0; i < image.height - kernel_height + 1; ++i) {
 				window_reset(hist, image, kernel_width, kernel_height, i, k);
-				for (size_t j = 0; j < image.width - kernel_width; ++j) {
+				for (size_t j = 0; j < image.width - kernel_width + 1; ++j) {
 					for (size_t r = 0; r < kernel_height; ++r)
 					{
 						hist_remove(hist, image(i + r, j, k));
@@ -136,7 +136,18 @@ namespace immagine
 				}
 			}
 
-		return self;
+		uint32_t x = kernel_width / 2;
+		uint32_t y = kernel_height / 2;
+		uint32_t width = image.width - (2 * (kernel_width / 2));
+		uint32_t height = image.height - (2 * (kernel_height / 2));
+
+		Image croped = image_crop(self, Rectangle{ x, y, width, height });
+		Image resized = image_resize(croped, image.width, image.height, INTERPOLATION_METHOD::NEAREST_NEIGHBOUR);
+
+		image_free(self);
+		image_free(croped);
+
+		return resized;
 	}
 
 }
