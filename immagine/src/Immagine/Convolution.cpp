@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <map>
+#include <omp.h>
 
 using namespace std;
 
@@ -120,13 +121,17 @@ namespace immagine
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
-		map<uint8_t, size_t> hist;
 		size_t middle = (kernel_width * kernel_height) / 2 + 1;
 
-		for (int8_t k = 0; k < image.channels; ++k)
-			for (size_t i = 0; i < image.height - kernel_height + 1; ++i) {
+		size_t nh = (image.height % (kernel_height / 2)) == 0 ? (image.height - kernel_height + 1) : (image.height - kernel_height);
+		size_t nw = (image.width % (kernel_width / 2)) == 0 ? (image.width - kernel_width + 1) : (image.width - kernel_width);
+
+#pragma omp parallel for
+		for (int8_t k = 0; k < image.channels; ++k) {
+			map<uint8_t, size_t> hist;
+			for (size_t i = 0; i < nh; ++i) {
 				window_reset(hist, image, kernel_width, kernel_height, i, k);
-				for (size_t j = 0; j < image.width - kernel_width + 1; ++j) {
+				for (size_t j = 0; j < nw; ++j) {
 					for (size_t r = 0; r < kernel_height; ++r)
 					{
 						hist_remove(hist, image(i + r, j, k));
@@ -135,19 +140,9 @@ namespace immagine
 					self(i + kernel_height / 2, j + kernel_width / 2, k) = median_get(hist, middle);
 				}
 			}
+		}
 
-		uint32_t x = kernel_width / 2;
-		uint32_t y = kernel_height / 2;
-		uint32_t width = image.width - (2 * (kernel_width / 2));
-		uint32_t height = image.height - (2 * (kernel_height / 2));
-
-		Image croped = image_crop(self, Rectangle{ x, y, width, height });
-		Image resized = image_resize(croped, image.width, image.height, INTERPOLATION_METHOD::NEAREST_NEIGHBOUR);
-
-		image_free(self);
-		image_free(croped);
-
-		return resized;
+		return self;
 	}
 
 }
