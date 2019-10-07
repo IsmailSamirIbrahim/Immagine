@@ -295,9 +295,3 @@ __pycache__/
 
 ### VisualStudio Patch ###
 build/
-
-# Images
-Images
-*.bmp
-*.jpeg
-*.png

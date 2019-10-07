@@ -5,8 +5,8 @@
 #include "Immagine/Convolution.h"
 
 #include <chrono>
-
-//#include <vld.h>
+#include <string>
+#include <vld.h>
 
 using namespace std::chrono;
 using namespace immagine;
@@ -15,22 +15,25 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
-	Image image = image_load("D:/ismail/images/10.png");
+
+	string file_path = string(IMAGE_DIR) + string("/images/fruits.bmp");
+	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
 
 	//type code here.
 	
-	Image img1 = image_median_filter(image, 91, 91);
+	Image img = image_binarize(image);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
 	printf("Time = %lld  seconds\n", duration.count());
 
-	image_save("D:/ismail/images/result.bmp", img1, IMAGE_FORMAT::BMP);
+	string out_path = string(IMAGE_DIR) + string("/images/binraized.bmp");
+	image_save(out_path.c_str(), img, IMAGE_FORMAT::BMP);
 
 	image_free(image);
-	image_free(img1);
+	image_free(img);
 
 	return 0;
 }

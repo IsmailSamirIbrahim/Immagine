@@ -57,3 +57,8 @@ target_include_directories(playground
 	PUBLIC
 	${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+
+target_compile_definitions(playground
+	PRIVATE
+		IMAGE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../resources"
+)
