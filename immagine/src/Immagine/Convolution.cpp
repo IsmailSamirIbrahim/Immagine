@@ -125,8 +125,8 @@ namespace immagine
 
 		size_t middle = (kernel_width * kernel_height) / 2 + 1;
 
-		size_t nh = (image.height % (kernel_height / 2)) == 0 ? (image.height - kernel_height + 1) : (image.height - kernel_height);
-		size_t nw = (image.width % (kernel_width / 2)) == 0 ? (image.width - kernel_width + 1) : (image.width - kernel_width);
+		size_t nh = image.height - kernel_height;
+		size_t nw = image.width - kernel_width;
 
 #pragma omp parallel for
 		for (int8_t k = 0; k < image.channels; ++k) {
@@ -143,6 +143,8 @@ namespace immagine
 				}
 			}
 		}
+
+		_image_handle_border(self, kernel_width, kernel_height);
 
 		return self;
 	}

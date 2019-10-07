@@ -24,7 +24,7 @@ main(int argc, char** argv)
 
 	//type code here.
 	
-	Image img = image_gaussian_filter(image, 10.0f);
+	Image img = image_median_filter(image, 11, 11);
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
