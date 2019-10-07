@@ -3,6 +3,8 @@
 #include "Immagine/Utilities.h"
 
 #include <vector>
+#include <map>
+#include <omp.h>
 
 using namespace std;
 
@@ -111,6 +113,72 @@ namespace immagine
 
 		kernel_free(kernel);
 		image_free(padded_image);
+
+		return self;
+	}
+
+	inline static uint8_t
+	median_get(const map<uint8_t, size_t>& hist, size_t middle)
+	{
+		map<uint8_t, size_t>::const_iterator it = hist.begin();
+		size_t sum = 0;
+		for (; it != hist.end(); ++it)
+		{
+			sum += it->second;
+			if (sum >= middle)
+				break;
+		}
+		return it->first;
+	}
+
+	inline static void
+	hist_add(map<uint8_t, size_t>& hist, uint8_t val)
+	{
+		++hist[val];
+	}
+
+	inline static void
+	hist_remove(map<uint8_t, size_t>& hist, uint8_t val)
+	{
+		map<uint8_t, size_t>::iterator it = hist.find(val);
+		if (it->second >= 1)
+			--it->second;
+	}
+
+	inline static void
+	window_reset(map<uint8_t, size_t>& hist, const Image& image, size_t kernel_width, size_t kernel_height, size_t i, size_t k)
+	{
+		hist.clear();
+		for (size_t r = 0; r < kernel_height; ++r)
+			for (size_t c = 0; c < kernel_width; ++c)
+				hist_add(hist, image(r + i, c, k));
+	}
+
+	Image
+	image_median_filter(const Image& image, size_t kernel_width, size_t kernel_height)
+	{
+		Image self = image_new(image.width, image.height, image.channels);
+
+		size_t middle = (kernel_width * kernel_height) / 2 + 1;
+
+		size_t nh = (image.height % (kernel_height / 2)) == 0 ? (image.height - kernel_height + 1) : (image.height - kernel_height);
+		size_t nw = (image.width % (kernel_width / 2)) == 0 ? (image.width - kernel_width + 1) : (image.width - kernel_width);
+
+#pragma omp parallel for
+		for (int8_t k = 0; k < image.channels; ++k) {
+			map<uint8_t, size_t> hist;
+			for (size_t i = 0; i < nh; ++i) {
+				window_reset(hist, image, kernel_width, kernel_height, i, k);
+				for (size_t j = 0; j < nw; ++j) {
+					for (size_t r = 0; r < kernel_height; ++r)
+					{
+						hist_remove(hist, image(i + r, j, k));
+						hist_add(hist, image(i + r, j + kernel_width, k));
+					}
+					self(i + kernel_height / 2, j + kernel_width / 2, k) = median_get(hist, middle);
+				}
+			}
+		}
 
 		return self;
 	}

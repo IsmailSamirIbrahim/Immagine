@@ -15,6 +15,7 @@ using namespace std;
 int
 main(int argc, char** argv)
 {
+
 	string file_path = string(IMAGE_DIR) + string("/images/fruits.bmp");
 	Image image = image_load(file_path.c_str());
 	
@@ -25,8 +26,8 @@ main(int argc, char** argv)
 	Image img = image_binarize(image);
 
 	auto stop = high_resolution_clock::now();
-	auto duration = duration_cast<milliseconds>(stop - start);
-	printf("Time = %lld  milliseconds\n", duration.count());
+	auto duration = duration_cast<seconds>(stop - start);
+	printf("Time = %lld  seconds\n", duration.count());
 
 	string out_path = string(IMAGE_DIR) + string("/images/binraized.bmp");
 	image_save(out_path.c_str(), img, IMAGE_FORMAT::BMP);
