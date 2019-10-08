@@ -100,50 +100,36 @@ namespace immagine
 		return self;
 	}
 
-	inline static Image
-	contrast(const vector<vector<vector<int long>>>& tmp)
+	Image
+	image_gamma(const Image& image, float gamma)
 	{
-		Image self = image_new(tmp[0].size(), tmp.size(), tmp[0][0].size());
+		Image self = image_new(image.width, image.height, image.channels);
 
-		vector<int long> min(tmp[0][0].size(), INT_MAX);
-		vector<int long> max(tmp[0][0].size(), INT_MIN);
-
-		for (uint8_t k = 0; k < tmp[0][0].size(); ++k)
-			for (size_t i = 0; i < tmp.size(); ++i)
-				for (size_t j = 0; j < tmp[0].size(); ++j)
-				{
-					if (tmp[i][j][k] < min[k])
-						min[k] = tmp[i][j][k];
-
-					if (tmp[i][j][k] > max[k])
-						max[k] = tmp[i][j][k];
-				}
-
-
-		for (uint8_t k = 0; k < tmp[0][0].size(); ++k)
-			for (size_t i = 0; i < tmp.size(); ++i)
-				for (size_t j = 0; j < tmp[0].size(); ++j) {
-					int long a = (tmp[i][j][k] - min[k]);
-					int long b = (max[k] - min[k]);
-					int long val = int long((float(a) / float(b)) * float(255));
-					self(i, j, k) = uint8_t(val);
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = 0; i < image.height; ++i)
+				for (size_t j = 0; j < image.width; ++j) {
+					float tmp = (float(image(i, j, k)) / 255.0f);
+					uint8_t val = 255 * powf(tmp, gamma);
+					self(i, j, k) = val;
 				}
 
 		return self;
 	}
 
 	Image
-	image_gamma(const Image& image, float gamma)
+	image_gamma_correction(const Image& image, float gamma)
 	{
-		vec3i tmp(image.height, vec2i(image.width, vec1i(image.channels)));
+		Image self = image_new(image.width, image.height, image.channels);
 
 		for (uint8_t k = 0; k < image.channels; ++k)
 			for (size_t i = 0; i < image.height; ++i)
 				for (size_t j = 0; j < image.width; ++j) {
-					tmp[i][j][k] = powf(image(i, j, k), gamma);
+					float tmp = (float(image(i, j, k)) / 255.0f);
+					uint8_t val = 255 * powf(tmp, 1 / gamma);
+					self(i, j, k) = val;
 				}
 
-		return contrast(tmp);
+		return self;
 	}
 
 }

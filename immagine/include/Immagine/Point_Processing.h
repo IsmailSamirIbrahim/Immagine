@@ -23,4 +23,6 @@ namespace immagine
 	IMMAGINE_EXPORT Image
 	image_gamma(const Image& image, float gamma);
 
+	IMMAGINE_EXPORT Image
+	image_gamma_correction(const Image& image, float gamma);
 }
