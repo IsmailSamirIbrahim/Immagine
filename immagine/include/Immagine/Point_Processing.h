@@ -18,9 +18,6 @@ namespace immagine
 	image_logarithm(const Image& image);
 
 	IMMAGINE_EXPORT Image
-	image_logarithm_inv(const Image& image);
-
-	IMMAGINE_EXPORT Image
 	image_gamma(const Image& image, float gamma);
 
 	IMMAGINE_EXPORT Image

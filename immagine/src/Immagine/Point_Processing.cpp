@@ -75,32 +75,6 @@ namespace immagine
 		return self;
 	}
 
-	Image
-	image_logarithm_inv(const Image & image)
-	{
-		Image self = image_new(image.width, image.height, image.channels);
-
-		//find maxmim intensity
-		int16_t R = INT16_MIN;
-		size_t size = image.width * image.height * image.channels;
-		for (size_t i = 0; i < size; ++i)
-			if (image.data[i] > R)
-				R = image.data[i];
-
-		const float c = (log(1 + R)) / 255.0;
-
-		for (uint8_t k = 0; k < self.channels; ++k)	
-			for (size_t i = 0; i < self.height; ++i)
-				for (size_t j = 0; j < self.width; ++j) {
-					size_t val = (std::exp(1 + image(i, j, k) * c));
-					//val = (val) < 0 ? 0 : val;
-					self(i, j, k) = uint8_t(val);
-				}
-
-		return self;
-	}
-
-	Image
 	image_gamma(const Image& image, float gamma)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
