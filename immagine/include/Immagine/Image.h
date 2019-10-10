@@ -2,7 +2,6 @@
 
 #include "Immagine/Exports.h"
 #include "Immagine/Imagedef.h"
-
 #include <assert.h>
 
 namespace immagine

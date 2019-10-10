@@ -8,6 +8,12 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#include "Immagine/Disjoint_Set.h"
+
+#include <map>
+
+using namespace std;
+
 namespace immagine
 {
 	// Helper Functions
@@ -454,7 +460,10 @@ namespace immagine
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
+		Disjoint_Set uf = disjoint_set_new();
 		uint8_t current_label = 1;
+
+		//1st Pass : label image and record label equivalences
 		for (size_t i = 0; i < image.height; ++i) {
 			for (size_t j = 0; j < image.width; ++j) {
 
@@ -469,12 +478,9 @@ namespace immagine
 				//If no neighbouring foreground pixels, new label->use current_label
 				if (labels.count == 0)
 				{
-					self(i, j) = current_label;
-					
-					//To-Do
+					self(i, j) = current_label;	
 					//record label in disjoint set
-					//make_set(current_label)
-					
+					disjoint_set_make(uf, current_label);
 					++current_label;
 				}
 				else
@@ -483,13 +489,41 @@ namespace immagine
 					self(i, j) = smallest_label;
 
 					//# More than one type of label in component
-					if (labels.count > 1 && labels.left != labels.above) {
-						//To-Do
+					if (labels.count > 1 && labels.left != labels.above)
+					{
 						//add equivalence class
-						//set_union(get_node(smallest_label), get_node(labels.left)
-						//set_union(get_node(smallest_label), get_node(labels.above)
+						disjoint_set_union(uf, smallest_label, labels.left);
+						disjoint_set_union(uf, smallest_label, labels.above);
 					}
 				}
+			}
+		}
+
+		std::map<uint8_t, uint8_t> final_labels;
+		uint8_t new_label_number = 1;
+
+		//2nd Pass: replace labels with their root labels
+		for (size_t i = 0; i < self.height; ++i) {
+			for (size_t j = 0; j < self.width; ++j) {
+
+				if (self(i, j) > 0)
+				{
+					uint8_t new_label = disjoint_set_find(uf, self(i, j));
+					self(i, j) = new_label;
+
+					if (final_labels.find(new_label) == final_labels.end())
+					{
+						final_labels[new_label] = new_label_number;
+						++new_label_number;
+					}
+				}
+			}
+		}
+
+		for (size_t i = 0; i < self.height; ++i) {
+			for (size_t j = 0; j < self.width; ++j) {
+				if (self(i, j) > 0)
+					self(i, j) = final_labels[self(i, j)];
 			}
 		}
 
