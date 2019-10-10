@@ -116,4 +116,7 @@ namespace immagine
 
 	IMMAGINE_EXPORT Image
 	image_binarize(const Image& image);
+
+	IMMAGINE_EXPORT Image
+	image_connected_component(const Image& image);
 }
