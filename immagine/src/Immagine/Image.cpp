@@ -429,6 +429,9 @@ namespace immagine
 	_neighbouring_labels(const Image& image, size_t i, size_t j)
 	{
 		Label_Info labels{};
+		labels.count = 0;
+		labels.above = 0;
+		labels.left = 0;
 
 		// Pixel is not on top edge of image
 		if (i > 0)
@@ -485,7 +488,15 @@ namespace immagine
 				}
 				else
 				{
-					uint8_t smallest_label = (labels.left < labels.above) ? labels.left : labels.above;
+					uint8_t smallest_label;
+					
+					if (labels.above != 0 && labels.left == 0)
+						smallest_label = labels.above;
+					else if (labels.left != 0 && labels.above == 0)
+						smallest_label = labels.left;
+					else
+						smallest_label = (labels.left < labels.above) ? labels.left : labels.above;
+
 					self(i, j) = smallest_label;
 
 					//# More than one type of label in component
@@ -499,9 +510,6 @@ namespace immagine
 			}
 		}
 
-		std::map<uint8_t, uint8_t> final_labels;
-		uint8_t new_label_number = 1;
-
 		//2nd Pass: replace labels with their root labels
 		for (size_t i = 0; i < self.height; ++i) {
 			for (size_t j = 0; j < self.width; ++j) {
@@ -509,24 +517,10 @@ namespace immagine
 				if (self(i, j) > 0)
 				{
 					uint8_t new_label = disjoint_set_find(uf, self(i, j));
-					self(i, j) = new_label;
-
-					if (final_labels.find(new_label) == final_labels.end())
-					{
-						final_labels[new_label] = new_label_number;
-						++new_label_number;
-					}
+					self(i, j) = new_label * 50;
 				}
 			}
 		}
-
-		for (size_t i = 0; i < self.height; ++i) {
-			for (size_t j = 0; j < self.width; ++j) {
-				if (self(i, j) > 0)
-					self(i, j) = final_labels[self(i, j)];
-			}
-		}
-
 		return self;
 	}
 }
