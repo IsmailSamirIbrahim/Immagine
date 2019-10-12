@@ -12,7 +12,6 @@
 #include <vector>
 #include <algorithm>
 #include <random>
-
 //#include <vld.h>
 
 using namespace std::chrono;
@@ -52,13 +51,10 @@ color_image(const Image& image)
 int
 main(int argc, char** argv)
 {
-
 	string file_path = string(IMAGE_DIR) + string("/images/1.png");
 	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
-
-	//type code here.
 
 	Image img1 = image_grayscale(image);
 	Image img2 = image_binarize(img1);
@@ -73,6 +69,12 @@ main(int argc, char** argv)
 
 	string out_path = string(IMAGE_DIR) + string("/images/result.bmp");
 	image_save(out_path.c_str(), result, IMAGE_FORMAT::BMP);
+
+	image_free(image);
+	image_free(img1);
+	image_free(img2);
+	image_free(img3);
+	image_free(result);
 
 	return 0;
 }
