@@ -1,4 +1,5 @@
 #include "Immagine/Point_Processing.h"
+#include "Immagine/Utilities.h"
 
 #include <cmath>
 
@@ -6,9 +7,9 @@
 
 using namespace std;
 
-typedef vector<vector<vector<int long>>> vec3i;
-typedef vector<vector<int long>> vec2i;
-typedef vector<int long> vec1i;
+typedef vector<vector<vector<uint32_t>>> vec3ui;
+typedef vector<vector<uint32_t>> vec2ui;
+typedef vector<uint32_t> vec1ui;
 
 namespace immagine
 {
@@ -75,6 +76,7 @@ namespace immagine
 		return self;
 	}
 
+	Image
 	image_gamma(const Image& image, float gamma)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
@@ -102,6 +104,31 @@ namespace immagine
 					uint8_t val = 255 * powf(tmp, 1 / gamma);
 					self(i, j, k) = val;
 				}
+
+		return self;
+	}
+
+	Image
+	image_adaptive_threshold(const Image & image)
+	{
+		Image self = image_new(image.width, image.height, 1);
+
+		Image padded_image = image_pad(image, 191/2, 191/2, 0);
+
+		vec3ui summed_table(padded_image.height, vec2ui(padded_image.width, vec1ui(padded_image.channels)));
+		calculate_summed_area(padded_image, summed_table);
+
+		for (uint8_t k = 0; k < padded_image.channels; ++k)
+			for (size_t i = 0; i < padded_image.height - 191+ 1; ++i)
+				for (size_t j = 0; j < padded_image.width - 191 + 1; ++j)
+				{
+					uint8_t mean = calculate_mean(i, j, k, 191, 191, summed_table);
+					if (image(i, j, k) <= mean)
+						self(i, j, k) = 0;
+					else
+						self(i, j, k) = 255;
+				}
+		image_free(padded_image);
 
 		return self;
 	}
