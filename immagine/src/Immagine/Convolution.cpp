@@ -3,6 +3,7 @@
 #include "Immagine/Utilities.h"
 
 #include <vector>
+#include <omp.h>
 
 using namespace std;
 
@@ -13,29 +14,34 @@ typedef vector<uint32_t> vec1ui;
 namespace immagine
 {
 	// Helper Functions
-	inline static Image
-	_image_box_filter(const Image& image, float standard_deviation)
+	inline static void
+	_image_handle_border(Image& self, size_t kernel_width, size_t kernel_height)
 	{
-		int* sizes = kernel_gaussian_gen(standard_deviation, 3);
+		//handle left border
+		for (uint8_t k = 0; k < self.channels; ++k)
+			for (size_t i = 0; i < self.height; ++i)
+				for (size_t j = 0; j < kernel_width / 2; ++j)
+					self(i, j, k) = self(i, kernel_width / 2, k);
 
-		Image imgh1 = image_horizental_filter(image, sizes[0]);
-		Image imgv1 = image_vertical_filter(imgh1, sizes[0]);
+		//handle right border
+		for (uint8_t k = 0; k < self.channels; ++k)
+			for (size_t i = 0; i < self.height; ++i)
+				for (size_t j = self.width - kernel_width / 2 - 1; j < self.width ; ++j)
+					self(i, j, k) = self(i, self.width - kernel_width / 2 - 2, k);
 
-		Image imgh2 = image_horizental_filter(imgv1, sizes[1]);
-		Image imgv2 = image_vertical_filter(imgh2, sizes[1]);
+		//handle upper border
+		for (uint8_t k = 0; k < self.channels; ++k)
+			for (size_t i = 0; i < kernel_height / 2; ++i)
+				for (size_t j = 0; j < self.width; ++j)
+					self(i, j, k) = self(kernel_height / 2, j, k);
 
-		Image imgh3 = image_horizental_filter(imgv2, sizes[2]);
-		Image self = image_vertical_filter(imgh3, sizes[2]);
-
-		image_free(imgh1);
-		image_free(imgh2);
-		image_free(imgh3);
-		image_free(imgv1);
-		image_free(imgv2);
-		::free(sizes);
-
-		return self;
+		//handle bottom border
+		for (uint8_t k = 0; k < self.channels; ++k)
+			for (size_t i = self.height - kernel_height / 2 - 1; i < self.height; ++i)
+				for (size_t j = 0; j < self.width; ++j)
+					self(i, j, k) = self(self.height - kernel_height / 2 - 2, j, k);
 	}
+
 
 	// API
 	Image
@@ -43,23 +49,18 @@ namespace immagine
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
-		int32_t offset = kernel_width / 2;
-		Image p_image = image_pad(image, offset, 0, image(0, 0));
-
 		Kernel kernel = kernel_box_gen(kernel_width, 1);
 
-		size_t nw = p_image.width - (kernel_width / 2);
+		size_t nw = image.width - kernel_width;
 
-		for (uint8_t k = 0; k < p_image.channels; ++k)
-			for (size_t i = 0; i < p_image.height; ++i)
-				for (size_t j = offset; j < nw; ++j) {
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = 0; i < image.height; ++i)
+				for (size_t j = 0; j < nw; ++j) {
 					float val = 0.0f;
 					for (size_t x = 0; x < kernel_width; ++x)
-						val += p_image(i, j + x - offset, k) * kernel.data[x];
-					self(i, j - offset, k) = uint8_t(val);
+						val += image(i, j + x, k) * kernel.data[x];
+					self(i, j + kernel_width / 2, k) = uint8_t(val);
 				}
-
-		image_free(p_image);
 		kernel_free(kernel);
 
 		return self;
@@ -70,23 +71,19 @@ namespace immagine
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
-		int32_t offset = kernel_height / 2;
-		Image p_image = image_pad(image, 0, offset, image(0, 0));
-
 		Kernel kernel = kernel_box_gen(1, kernel_height);
 
-		size_t nh = p_image.height - (kernel_height / 2);
+		size_t nh = image.height - kernel_height;
 
-		for (uint8_t k = 0; k < p_image.channels; ++k)
-			for (size_t i = offset; i < nh; ++i)
-				for (size_t j = 0; j < p_image.width; ++j) {
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = 0; i < nh; ++i)
+				for (size_t j = 0; j < image.width; ++j) {
 					float val = 0.0f;
 					for (size_t x = 0; x < kernel_height; ++x)
-						val += p_image(i + x - offset, j, k) * kernel.data[x];
-					self(i - offset, j, k) = uint8_t(val);
+						val += image(i + x, j, k) * kernel.data[x];
+					self(i + kernel_height / 2, j, k) = uint8_t(val);
 				}
 
-		image_free(p_image);
 		kernel_free(kernel);
 
 		return self;
@@ -95,22 +92,12 @@ namespace immagine
 	Image
 	image_box_filter(const Image& image, size_t kernel_width, size_t kernel_height)
 	{
-		Image self = image_new(image.width, image.height, image.channels);
+		Image h_image = image_horizental_filter(image, kernel_width);
+		Image self = image_vertical_filter(h_image, kernel_height);
 
-		Image padded_image = image_pad(image, kernel_width / 2, kernel_height / 2, image(0, 0));
+		_image_handle_border(self, kernel_width, kernel_height);
 
-		vec3ui summed_table(padded_image.height, vec2ui(padded_image.width, vec1ui(padded_image.channels)));
-		calculate_summed_area(padded_image, summed_table);
-
-		Kernel kernel = kernel_box_gen(kernel_width, kernel_height);
-
-		for (uint8_t k = 0; k < padded_image.channels; ++k)
-			for (size_t i = 0; i < padded_image.height - kernel_height + 1; ++i)
-				for (size_t j = 0; j < padded_image.width - kernel_width + 1; ++j)
-					self(i, j, k) = calculate_mean(i, j, k, kernel.height, kernel.width, summed_table);
-
-		kernel_free(kernel);
-		image_free(padded_image);
+		image_free(h_image);
 
 		return self;
 	}
@@ -118,6 +105,48 @@ namespace immagine
 	Image
 	image_gaussian_filter(const Image& image, float standard_deviation)
 	{
-		return _image_box_filter(image, standard_deviation);
+		int* sizes = kernel_gaussian_gen(standard_deviation, 3);
+
+		Image img1 = image_box_filter(image, sizes[0], sizes[0]);
+		Image img2 = image_box_filter(img1, sizes[1], sizes[1]);
+		Image self = image_box_filter(img2, sizes[2], sizes[2]);
+
+		image_free(img1);
+		image_free(img2);
+		::free(sizes);
+
+		return self;
 	}
+
+	Image
+	image_median_filter(const Image& image, size_t kernel_width, size_t kernel_height)
+	{
+		Image self = image_new(image.width, image.height, image.channels);
+
+		size_t middle = (kernel_width * kernel_height) / 2 + 1;
+
+		size_t nh = image.height - kernel_height;
+		size_t nw = image.width - kernel_width;
+
+#pragma omp parallel for
+		for (int8_t k = 0; k < image.channels; ++k) {
+			map<uint8_t, size_t> hist;
+			for (size_t i = 0; i < nh; ++i) {
+				window_reset(hist, image, kernel_width, kernel_height, i, k);
+				for (size_t j = 0; j < nw; ++j) {
+					for (size_t r = 0; r < kernel_height; ++r)
+					{
+						hist_remove(hist, image(i + r, j, k));
+						hist_add(hist, image(i + r, j + kernel_width, k));
+					}
+					self(i + kernel_height / 2, j + kernel_width / 2, k) = median_get(hist, middle);
+				}
+			}
+		}
+
+		_image_handle_border(self, kernel_width, kernel_height);
+
+		return self;
+	}
+
 }
