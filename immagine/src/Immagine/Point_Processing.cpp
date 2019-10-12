@@ -1,7 +1,7 @@
 #include "Immagine/Point_Processing.h"
 #include "Immagine/Utilities.h"
 
-#include <cmath>
+#include <algorithm>
 
 #include <vector>
 
@@ -113,22 +113,30 @@ namespace immagine
 	{
 		Image self = image_new(image.width, image.height, 1);
 
-		Image padded_image = image_pad(image, 191/2, 191/2, 0);
+		float S = image.width / 8;
+		float s2 = S / 2;
+		float T = 1;
 
-		vec3ui summed_table(padded_image.height, vec2ui(padded_image.width, vec1ui(padded_image.channels)));
-		calculate_summed_area(padded_image, summed_table);
+		vec3ui summed_table(image.height, vec2ui(image.width, vec1ui(image.channels)));
+		calculate_summed_area(image, summed_table);
 
-		for (uint8_t k = 0; k < padded_image.channels; ++k)
-			for (size_t i = 0; i < padded_image.height - 191+ 1; ++i)
-				for (size_t j = 0; j < padded_image.width - 191 + 1; ++j)
-				{
-					uint8_t mean = calculate_mean(i, j, k, 191, 191, summed_table);
-					if (image(i, j, k) <= mean)
-						self(i, j, k) = 0;
-					else
-						self(i, j, k) = 255;
-				}
-		image_free(padded_image);
+		for(size_t i = 0; i < image.height; ++i)
+			for (size_t j = 0; j < image.width; ++j)
+			{
+				int x0 = std::max(int(j - s2), int(0));
+				int y0 = std::max(int(i - s2), int(0));
+				int y1 = std::min(int(i + s2), int(image.height - 1));
+				int x1 = std::min(int(j + s2), int(image.width - 1));
+
+				size_t count = (y1 - y0) * (x1 - x0);
+
+				size_t sum_ = summed_table[y1][x1][0] - summed_table[y0][x1][0] - summed_table[y1][x0][0] + summed_table[y0][x0][0];
+
+				if ((image(i, j) * count) < (sum_ * (100.0 - T) / 100.0))
+					self(i, j) = 0;
+				else
+					self(i, j) = 255;
+			}
 
 		return self;
 	}

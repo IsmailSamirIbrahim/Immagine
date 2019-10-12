@@ -8,6 +8,12 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#include "Immagine/Disjoint_Set.h"
+
+#include <map>
+
+using namespace std;
+
 namespace immagine
 {
 	// Helper Functions
@@ -408,8 +414,113 @@ namespace immagine
 
 		uint8_t threshold = ((float)sum / (float)size + 0.5f);
 		for (size_t i = 0; i < size; ++i)
-			self.data[i] = (image.data[i] > threshold) ? WHITE : BLACK;
+			self.data[i] = (image.data[i] > threshold) ? WHITE: BLACK;
 
+		return self;
+	}
+
+	struct Label_Info{
+		uint8_t left;
+		uint8_t above;
+		uint8_t count;
+	};
+
+	inline static Label_Info
+	_neighbouring_labels(const Image& image, size_t i, size_t j)
+	{
+		Label_Info labels{};
+		labels.count = 0;
+		labels.above = 0;
+		labels.left = 0;
+
+		// Pixel is not on top edge of image
+		if (i > 0)
+		{
+			//It's a labelled pixel
+			if (image(i - 1, j) > 0) 
+			{
+				labels.above = image(i - 1, j);
+				labels.count++;
+			}
+		}
+
+		// Pixel is not on left edge of image
+		if (j > 0)
+		{
+			//It's a labelled pixel
+			if (image(i, j - 1) > 0)
+			{
+				labels.left = image(i, j - 1);
+				labels.count++;
+			}
+		}
+
+		return labels;
+	}
+
+	Image
+	image_connected_component(const Image & image)
+	{
+		Image self = image_new(image.width, image.height, image.channels);
+
+		Disjoint_Set uf = disjoint_set_new();
+		uint8_t current_label = 1;
+
+		//1st Pass : label image and record label equivalences
+		for (size_t i = 0; i < image.height; ++i) {
+			for (size_t j = 0; j < image.width; ++j) {
+
+				//background
+				if (image(i, j) == 0) {
+					self(i, j) = 0;
+					continue;
+				}
+
+				Label_Info labels = _neighbouring_labels(self, i, j);
+				
+				//If no neighbouring foreground pixels, new label->use current_label
+				if (labels.count == 0)
+				{
+					self(i, j) = current_label;	
+					//record label in disjoint set
+					disjoint_set_make(uf, current_label);
+					++current_label;
+				}
+				else
+				{
+					uint8_t smallest_label;
+					
+					if (labels.above != 0 && labels.left == 0)
+						smallest_label = labels.above;
+					else if (labels.left != 0 && labels.above == 0)
+						smallest_label = labels.left;
+					else
+						smallest_label = (labels.left < labels.above) ? labels.left : labels.above;
+
+					self(i, j) = smallest_label;
+
+					//# More than one type of label in component
+					if (labels.count > 1 && labels.left != labels.above)
+					{
+						//add equivalence class
+						disjoint_set_union(uf, smallest_label, labels.left);
+						disjoint_set_union(uf, smallest_label, labels.above);
+					}
+				}
+			}
+		}
+
+		//2nd Pass: replace labels with their root labels
+		for (size_t i = 0; i < self.height; ++i) {
+			for (size_t j = 0; j < self.width; ++j) {
+
+				if (self(i, j) > 0)
+				{
+					uint8_t new_label = disjoint_set_find(uf, self(i, j));
+					self(i, j) = new_label * 50;
+				}
+			}
+		}
 		return self;
 	}
 }
