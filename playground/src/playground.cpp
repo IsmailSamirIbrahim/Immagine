@@ -51,13 +51,13 @@ color_image(const Image& image)
 int
 main(int argc, char** argv)
 {
-	string file_path = string(IMAGE_DIR) + string("/images/1.png");
+	string file_path = string(IMAGE_DIR) + string("/images/2.png");
 	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
 
 	Image img1 = image_grayscale(image);
-	Image img2 = image_binarize(img1);
+	Image img2 = image_adaptive_threshold(img1);
 
 	Image img3 = image_connected_component(img2);
 
