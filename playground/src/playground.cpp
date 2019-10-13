@@ -19,16 +19,16 @@ using namespace immagine;
 using namespace std;
 
 inline static Image
-color_image(const Image& image)
+color_image(const std::vector<std::vector<uint32_t>>& vec)
 {
-	Image self = image_new(image.width, image.height, 3);
+	Image self = image_new(vec[0].size(), vec.size(), 3);
 
 	std::map<uint8_t, std::vector<std::pair<size_t, size_t>>> map;
 
-	for (size_t i = 0; i < image.height; ++i)
-		for (size_t j = 0; j < image.width; ++j)
-			if(image(i, j) > 0)
-				map[image(i, j)].push_back(make_pair(i, j));
+	for (size_t i = 0; i < self.height; ++i)
+		for (size_t j = 0; j < self.width; ++j)
+			if(vec[i][j] > 0)
+				map[vec[i][j]].push_back(make_pair(i, j));
 
 	std::vector<uint8_t> color(3);
 	color[0] = 255;
@@ -51,15 +51,15 @@ color_image(const Image& image)
 int
 main(int argc, char** argv)
 {
-	string file_path = string(IMAGE_DIR) + string("/images/2.png");
+	string file_path = string(IMAGE_DIR) + string("/images/4.jpg");
 	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
 
 	Image img1 = image_grayscale(image);
-	Image img2 = image_adaptive_threshold(img1);
+	Image img2 = image_binarize(img1);
 
-	Image img3 = image_connected_component(img2);
+	vector<vector<uint32_t>> img3 = image_connected_component(img2);
 
 	Image result = color_image(img3);
 
@@ -73,7 +73,7 @@ main(int argc, char** argv)
 	image_free(image);
 	image_free(img1);
 	image_free(img2);
-	image_free(img3);
+	//image_free(img3);
 	image_free(result);
 
 	return 0;

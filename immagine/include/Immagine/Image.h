@@ -3,6 +3,7 @@
 #include "Immagine/Exports.h"
 #include "Immagine/Imagedef.h"
 #include <assert.h>
+#include <vector>
 
 namespace immagine
 {
@@ -116,6 +117,6 @@ namespace immagine
 	IMMAGINE_EXPORT Image
 	image_binarize(const Image& image);
 
-	IMMAGINE_EXPORT Image
+	IMMAGINE_EXPORT std::vector<std::vector<uint32_t>>
 	image_connected_component(const Image& image);
 }

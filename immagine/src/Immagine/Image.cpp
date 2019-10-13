@@ -11,6 +11,7 @@
 #include "Immagine/Disjoint_Set.h"
 
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -420,13 +421,13 @@ namespace immagine
 	}
 
 	struct Label_Info{
-		uint8_t left;
-		uint8_t above;
-		uint8_t count;
+		uint32_t left;
+		uint32_t above;
+		uint32_t count;
 	};
 
 	inline static Label_Info
-	_neighbouring_labels(const Image& image, size_t i, size_t j)
+	_neighbouring_labels(const std::vector<std::vector<uint32_t>>& vec, size_t i, size_t j)
 	{
 		Label_Info labels{};
 		labels.count = 0;
@@ -437,9 +438,9 @@ namespace immagine
 		if (i > 0)
 		{
 			//It's a labelled pixel
-			if (image(i - 1, j) > 0) 
+			if (vec[i - 1][j] > 0) 
 			{
-				labels.above = image(i - 1, j);
+				labels.above = vec[i - 1][j];
 				labels.count++;
 			}
 		}
@@ -448,9 +449,9 @@ namespace immagine
 		if (j > 0)
 		{
 			//It's a labelled pixel
-			if (image(i, j - 1) > 0)
+			if (vec[i][j - 1] > 0)
 			{
-				labels.left = image(i, j - 1);
+				labels.left = vec[i][j - 1];
 				labels.count++;
 			}
 		}
@@ -458,13 +459,13 @@ namespace immagine
 		return labels;
 	}
 
-	Image
+	std::vector<std::vector<uint32_t>>
 	image_connected_component(const Image & image)
 	{
-		Image self = image_new(image.width, image.height, image.channels);
+		std::vector<vector<uint32_t>> vec(image.height, std::vector<uint32_t>(image.width));
 
 		Disjoint_Set uf = disjoint_set_new();
-		uint8_t current_label = 1;
+		uint32_t current_label = 1;
 
 		//1st Pass : label image and record label equivalences
 		for (size_t i = 0; i < image.height; ++i) {
@@ -472,23 +473,23 @@ namespace immagine
 
 				//background
 				if (image(i, j) == 0) {
-					self(i, j) = 0;
+					vec[i][j] = 0;
 					continue;
 				}
 
-				Label_Info labels = _neighbouring_labels(self, i, j);
+				Label_Info labels = _neighbouring_labels(vec, i, j);
 				
 				//If no neighbouring foreground pixels, new label->use current_label
 				if (labels.count == 0)
 				{
-					self(i, j) = current_label;	
+					vec[i][j] = current_label;	
 					//record label in disjoint set
 					disjoint_set_make(uf, current_label);
 					++current_label;
 				}
 				else
 				{
-					uint8_t smallest_label;
+					uint32_t smallest_label;
 					
 					if (labels.above != 0 && labels.left == 0)
 						smallest_label = labels.above;
@@ -497,7 +498,7 @@ namespace immagine
 					else
 						smallest_label = (labels.left < labels.above) ? labels.left : labels.above;
 
-					self(i, j) = smallest_label;
+					vec[i][j] = smallest_label;
 
 					//# More than one type of label in component
 					if (labels.count > 1 && labels.left != labels.above)
@@ -511,16 +512,16 @@ namespace immagine
 		}
 
 		//2nd Pass: replace labels with their root labels
-		for (size_t i = 0; i < self.height; ++i) {
-			for (size_t j = 0; j < self.width; ++j) {
+		for (size_t i = 0; i < vec.size(); ++i) {
+			for (size_t j = 0; j < vec[0].size(); ++j) {
 
-				if (self(i, j) > 0)
+				if (vec[i][j] > 0)
 				{
-					uint8_t new_label = disjoint_set_find(uf, self(i, j));
-					self(i, j) = new_label * 50;
+					uint8_t new_label = disjoint_set_find(uf, vec[i][j]);
+					vec[i][j] = new_label;
 				}
 			}
 		}
-		return self;
+		return vec;
 	}
 }

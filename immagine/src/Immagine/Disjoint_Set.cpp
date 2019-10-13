@@ -6,7 +6,7 @@ using namespace std;
 namespace immagine
 {
 
-	std::unordered_map<uint8_t, Node> Disjoint_Set::map;
+	std::unordered_map<uint32_t, Node> Disjoint_Set::map;
 
 	Disjoint_Set
 	disjoint_set_new()
@@ -16,7 +16,7 @@ namespace immagine
 	}
 	
 	void
-	disjoint_set_make(Disjoint_Set self, uint8_t data)
+	disjoint_set_make(Disjoint_Set self, uint32_t data)
 	{
 		Node node = (Node)::malloc(sizeof(Node));
 		node->data = data;
@@ -39,15 +39,15 @@ namespace immagine
 		return node->parent;
 	}
 
-	uint8_t
-	disjoint_set_find(Disjoint_Set self, uint8_t data)
+	uint32_t
+	disjoint_set_find(Disjoint_Set self, uint32_t data)
 	{
 		Node node = self.map.find(data)->second;
 		return _disjoint_set_find(node)->data;
 	}
 
 	void
-	disjoint_set_union(Disjoint_Set self, uint8_t data1, uint8_t data2)
+	disjoint_set_union(Disjoint_Set self, uint32_t data1, uint32_t data2)
 	{
 		Node node1 = self.map.find(data1)->second;
 		Node node2 = self.map.find(data2)->second;
