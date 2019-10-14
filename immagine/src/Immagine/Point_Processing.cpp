@@ -13,6 +13,19 @@ typedef vector<uint32_t> vec1ui;
 
 namespace immagine
 {
+	// Helper functions
+	uint8_t
+	truncate(uint32_t value)
+	{
+		if (value < 0) 
+			return 0;
+		if (value > 255)
+			return 255;
+		return value;
+	}
+
+
+	// API
 	Image
 	image_bright_increase(const Image& image, uint8_t value)
 	{
@@ -35,6 +48,21 @@ namespace immagine
 			for (size_t i = 0; i < self.height; ++i)
 				for (size_t j = 0; j < self.width; ++j)
 					self(i, j, k) = (image(i, j, k) - value) < 0 ? 0 : image(i, j, k) - value;
+
+		return self;
+	}
+
+	Image
+	image_contrast_increase(const Image& image, uint8_t value)
+	{
+		Image self = image_new(image.width, image.height, image.channels);
+
+		float factor = (259.0 * (value + 255.0)) / (255.0 * (259.0 - value));
+
+		for (uint8_t k = 0; k < self.channels; ++k)
+			for (size_t i = 0; i < self.height; ++i)
+				for (size_t j = 0; j < self.width; ++j)
+					self(i, j, k) = truncate((uint32_t)(factor * (image(i, j, k) - 128) + 128));
 
 		return self;
 	}

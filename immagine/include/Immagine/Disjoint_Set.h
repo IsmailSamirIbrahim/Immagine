@@ -7,28 +7,21 @@
 
 namespace immagine
 {
-	typedef struct INode* Node;
-	struct INode
-	{
-		uint32_t rank;
-		uint32_t data;
-		Node parent;
-	};
-
 	struct Disjoint_Set
 	{
-		static std::unordered_map<uint32_t, Node> map;
+		uint16_t* arr;
+		uint16_t* size;
 	};
 
 	IMMAGINE_EXPORT Disjoint_Set
-	disjoint_set_new();
+	disjoint_set_new(size_t size);
 
 	IMMAGINE_EXPORT void
-	disjoint_set_make(Disjoint_Set self, uint32_t data);
+	disjoint_set_free(Disjoint_Set& self);
 
-	IMMAGINE_EXPORT uint32_t
-	disjoint_set_find(Disjoint_Set self, uint32_t data);
+	IMMAGINE_EXPORT uint16_t
+	disjoint_set_find_root(Disjoint_Set self, uint16_t data);
 
 	IMMAGINE_EXPORT void
-	disjoint_set_union(Disjoint_Set self, uint32_t data1, uint32_t data2);
+	disjoint_set_union(Disjoint_Set self, uint16_t data1, uint16_t data2);
 }

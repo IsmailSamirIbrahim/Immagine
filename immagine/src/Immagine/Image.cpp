@@ -464,7 +464,7 @@ namespace immagine
 	{
 		std::vector<vector<uint32_t>> vec(image.height, std::vector<uint32_t>(image.width));
 
-		Disjoint_Set uf = disjoint_set_new();
+		Disjoint_Set uf = disjoint_set_new(image.width * image.height);
 		uint32_t current_label = 1;
 
 		//1st Pass : label image and record label equivalences
@@ -484,7 +484,6 @@ namespace immagine
 				{
 					vec[i][j] = current_label;	
 					//record label in disjoint set
-					disjoint_set_make(uf, current_label);
 					++current_label;
 				}
 				else
@@ -517,11 +516,14 @@ namespace immagine
 
 				if (vec[i][j] > 0)
 				{
-					uint8_t new_label = disjoint_set_find(uf, vec[i][j]);
+					uint8_t new_label = disjoint_set_find_root(uf, vec[i][j]);
 					vec[i][j] = new_label;
 				}
 			}
 		}
+
+		disjoint_set_free(uf);
+
 		return vec;
 	}
 }
