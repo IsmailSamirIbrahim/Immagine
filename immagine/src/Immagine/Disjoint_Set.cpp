@@ -34,6 +34,7 @@ namespace immagine
 	{
 		while (self.arr[data] != data)
 		{
+			self.arr[data] = self.arr[self.arr[data]];
 			data = self.arr[data];
 		}
 		return data;

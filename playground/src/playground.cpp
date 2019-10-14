@@ -59,9 +59,7 @@ main(int argc, char** argv)
 
 	auto start = high_resolution_clock::now();
 
-	
 	vector<vector<uint32_t>> img3 = image_connected_component(img2);
-
 
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
