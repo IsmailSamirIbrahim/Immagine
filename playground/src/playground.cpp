@@ -51,7 +51,7 @@ color_image(const std::vector<std::vector<uint32_t>>& vec)
 int
 main(int argc, char** argv)
 {
-	string file_path = string(IMAGE_DIR) + string("/images/big.jpg");
+	string file_path = string(IMAGE_DIR) + string("/images/images.png");
 	Image image = image_load(file_path.c_str());
 	
 	Image img1 = image_grayscale(image);
