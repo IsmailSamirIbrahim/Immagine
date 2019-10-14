@@ -5,66 +5,56 @@ using namespace std;
 
 namespace immagine
 {
-
-	std::unordered_map<uint32_t, Node> Disjoint_Set::map;
-
 	Disjoint_Set
-	disjoint_set_new()
+	disjoint_set_new(size_t size)
 	{
 		Disjoint_Set self{};
+
+		self.arr = (uint16_t*)::malloc(size * sizeof(uint16_t));
+		self.size = (uint16_t*)::malloc(size * sizeof(uint16_t));
+
+		for (size_t i = 0; i < size; ++i)
+		{
+			self.arr[i] = i;
+			self.size[i] = 1;
+		}
+
 		return self;
 	}
+
+	void
+	disjoint_set_free(Disjoint_Set& self)
+	{
+		::free(self.arr);
+		::free(self.size);
+	}
 	
-	void
-	disjoint_set_make(Disjoint_Set self, uint32_t data)
+	uint16_t
+	disjoint_set_find_root(Disjoint_Set self, uint16_t data)
 	{
-		Node node = (Node)::malloc(sizeof(Node));
-		node->data = data;
-		node->rank = 0;
-		node->parent = node;
-
-		self.map[data] = node;
-	}
-
-	inline static Node
-	_disjoint_set_find(Node node)
-	{
-		Node parent = node->parent;
-		if (parent == node)
-			return parent;
-
-		//path compression
-		node->parent = _disjoint_set_find(node->parent);
-
-		return node->parent;
-	}
-
-	uint32_t
-	disjoint_set_find(Disjoint_Set self, uint32_t data)
-	{
-		Node node = self.map.find(data)->second;
-		return _disjoint_set_find(node)->data;
-	}
-
-	void
-	disjoint_set_union(Disjoint_Set self, uint32_t data1, uint32_t data2)
-	{
-		Node node1 = self.map.find(data1)->second;
-		Node node2 = self.map.find(data2)->second;
-
-		Node parent1 = _disjoint_set_find(node1);
-		Node parent2 = _disjoint_set_find(node2);
-
-		//they are part of the same set
-		if (parent1->data == parent2->data)
-			return;
-
-		if (parent1->rank >= parent2->rank)
+		while (self.arr[data] != data)
 		{
-			parent1->rank = (parent1->rank == parent2->rank) ? parent1->rank + 1 : parent1->rank;
-			parent2->parent = parent1;
+			self.arr[data] = self.arr[self.arr[data]];
+			data = self.arr[data];
+		}
+		return data;
+	}
+
+	void
+	disjoint_set_union(Disjoint_Set self, uint16_t data1, uint16_t data2)
+	{
+		uint16_t root_data1 = disjoint_set_find_root(self, data1);
+		uint16_t root_data2 = disjoint_set_find_root(self, data2);
+
+		if (self.size[root_data1] < self.size[root_data2])
+		{
+			self.arr[root_data1] = self.arr[root_data2];
+			self.size[root_data2] += self.size[root_data1];
 		}
 		else
-			parent1->parent = parent2;
+		{
+			self.arr[root_data2] = self.arr[root_data1];
+			self.size[root_data1] += self.size[root_data2];
+		}
 	}
 }

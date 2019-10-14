@@ -13,6 +13,7 @@ typedef vector<uint32_t> vec1ui;
 
 namespace immagine
 {
+	// API
 	Image
 	image_bright_increase(const Image& image, uint8_t value)
 	{
