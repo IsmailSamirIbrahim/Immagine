@@ -1,4 +1,8 @@
 <RCC>
-  <qresource prefix="/">
-  </qresource>
+    <qresource prefix="/"/>
+    <qresource prefix="/images">
+        <file>icons/folder-vector-icon-png_260858.jpg</file>
+        <file>icons/Iconleak-Atrous-Disk.ico</file>
+        <file>icons/page_white.png</file>
+    </qresource>
 </RCC>
