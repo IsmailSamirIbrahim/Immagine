@@ -10,8 +10,7 @@
 
 #include "Immagine/Disjoint_Set.h"
 
-#include <map>
-#include <vector>
+#include "Immagine/Utilities.h"
 
 using namespace std;
 
@@ -427,7 +426,7 @@ namespace immagine
 	};
 
 	inline static Label_Info
-	_neighbouring_labels(const std::vector<std::vector<uint32_t>>& vec, size_t i, size_t j)
+	_neighbouring_labels(uint32_t*** vec, size_t i, size_t j)
 	{
 		Label_Info labels{};
 		labels.count = 0;
@@ -438,9 +437,9 @@ namespace immagine
 		if (i > 0)
 		{
 			//It's a labelled pixel
-			if (vec[i - 1][j] > 0) 
+			if (vec[i - 1][j][0] > 0)
 			{
-				labels.above = vec[i - 1][j];
+				labels.above = vec[i - 1][j][0];
 				labels.count++;
 			}
 		}
@@ -449,9 +448,9 @@ namespace immagine
 		if (j > 0)
 		{
 			//It's a labelled pixel
-			if (vec[i][j - 1] > 0)
+			if (vec[i][j - 1][0] > 0)
 			{
-				labels.left = vec[i][j - 1];
+				labels.left = vec[i][j - 1][0];
 				labels.count++;
 			}
 		}
@@ -459,10 +458,10 @@ namespace immagine
 		return labels;
 	}
 
-	std::vector<std::vector<uint32_t>>
+	uint32_t***
 	image_connected_component(const Image & image)
 	{
-		std::vector<vector<uint32_t>> vec(image.height, std::vector<uint32_t>(image.width));
+		uint32_t*** vec = array3d_new(image.width, image.height, image.channels);
 
 		Disjoint_Set uf = disjoint_set_new(image.width * image.height);
 		uint32_t current_label = 1;
@@ -473,7 +472,7 @@ namespace immagine
 
 				//background
 				if (image(i, j) == 0) {
-					vec[i][j] = 0;
+					vec[i][j][0] = 0;
 					continue;
 				}
 
@@ -482,7 +481,7 @@ namespace immagine
 				//If no neighbouring foreground pixels, new label->use current_label
 				if (labels.count == 0)
 				{
-					vec[i][j] = current_label;	
+					vec[i][j][0] = current_label;
 					//record label in disjoint set
 					++current_label;
 				}
@@ -497,7 +496,7 @@ namespace immagine
 					else
 						smallest_label = (labels.left < labels.above) ? labels.left : labels.above;
 
-					vec[i][j] = smallest_label;
+					vec[i][j][0] = smallest_label;
 
 					//# More than one type of label in component
 					if (labels.count > 1 && labels.left != labels.above)
@@ -511,13 +510,13 @@ namespace immagine
 		}
 
 		//2nd Pass: replace labels with their root labels
-		for (size_t i = 0; i < vec.size(); ++i) {
-			for (size_t j = 0; j < vec[0].size(); ++j) {
+		for (size_t i = 0; i < image.height; ++i) {
+			for (size_t j = 0; j < image.width; ++j) {
 
-				if (vec[i][j] > 0)
+				if (vec[i][j][0] > 0)
 				{
-					uint8_t new_label = disjoint_set_find_root(uf, vec[i][j]);
-					vec[i][j] = new_label;
+					uint8_t new_label = disjoint_set_find_root(uf, vec[i][j][0]);
+					vec[i][j][0] = new_label;
 				}
 			}
 		}

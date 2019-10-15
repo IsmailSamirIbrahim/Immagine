@@ -87,4 +87,28 @@ namespace immagine
 				hist_add(hist, image(r + i, c, k));
 	}
 
+	inline static uint32_t***
+	array3d_new(size_t width, size_t height, size_t depth)
+	{
+		uint32_t*** arr = new uint32_t**[height];
+		for (size_t i = 0; i < height; ++i) {
+			arr[i] = new uint32_t*[width];
+			for (size_t j = 0; j < width; ++j)
+				arr[i][j] = new uint32_t[depth];
+		}
+		return arr;
+	}
+
+	inline static void
+	array3d_free(uint32_t*** arr, size_t width, size_t height, size_t depth)
+	{
+		for (size_t i = 0; i < height; ++i)
+		{
+			for (size_t j = 0; j < width; ++j)
+				delete[] arr[i][j];
+			delete[] arr[i];
+		}
+		delete[] arr;
+	}
+
 }
