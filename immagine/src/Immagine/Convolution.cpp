@@ -2,14 +2,7 @@
 #include "Immagine/Kernel.h"
 #include "Immagine/Utilities.h"
 
-#include <vector>
 #include <omp.h>
-
-using namespace std;
-
-typedef vector<vector<vector<uint32_t>>> vec3ui;
-typedef vector<vector<uint32_t>> vec2ui;
-typedef vector<uint32_t> vec1ui;
 
 namespace immagine
 {

@@ -122,6 +122,57 @@ namespace immagine
 		return self;
 	}
 
+	struct Label_Info {
+		uint32_t left;
+		uint32_t above;
+		uint32_t count;
+	};
+
+	inline static Label_Info
+	_image_neighbouring_labels(uint32_t*** vec, size_t i, size_t j)
+	{
+		Label_Info labels{};
+		labels.count = 0;
+		labels.above = 0;
+		labels.left = 0;
+
+		// Pixel is not on top edge of image
+		if (i > 0)
+		{
+			//It's a labelled pixel
+			if (vec[i - 1][j][0] > 0)
+			{
+				labels.above = vec[i - 1][j][0];
+				labels.count++;
+			}
+		}
+
+		// Pixel is not on left edge of image
+		if (j > 0)
+		{
+			//It's a labelled pixel
+			if (vec[i][j - 1][0] > 0)
+			{
+				labels.left = vec[i][j - 1][0];
+				labels.count++;
+			}
+		}
+
+		return labels;
+	}
+
+	inline static Image
+	_image_from_array3d(uint32_t*** vec, size_t width, size_t height)
+	{
+		Image self = image_new(width, height, 1);
+
+		for (size_t i = 0; i < height; ++i)
+			for (size_t j = 0; j < width; ++j)
+				self(i, j) = vec[i][j][0];
+
+		return self;
+	}
+
 
 	// API
 	Image
@@ -419,46 +470,7 @@ namespace immagine
 		return self;
 	}
 
-	struct Label_Info{
-		uint32_t left;
-		uint32_t above;
-		uint32_t count;
-	};
-
-	inline static Label_Info
-	_neighbouring_labels(uint32_t*** vec, size_t i, size_t j)
-	{
-		Label_Info labels{};
-		labels.count = 0;
-		labels.above = 0;
-		labels.left = 0;
-
-		// Pixel is not on top edge of image
-		if (i > 0)
-		{
-			//It's a labelled pixel
-			if (vec[i - 1][j][0] > 0)
-			{
-				labels.above = vec[i - 1][j][0];
-				labels.count++;
-			}
-		}
-
-		// Pixel is not on left edge of image
-		if (j > 0)
-		{
-			//It's a labelled pixel
-			if (vec[i][j - 1][0] > 0)
-			{
-				labels.left = vec[i][j - 1][0];
-				labels.count++;
-			}
-		}
-
-		return labels;
-	}
-
-	uint32_t***
+	Image
 	image_connected_component(const Image & image)
 	{
 		uint32_t*** vec = array3d_new(image.width, image.height, image.channels);
@@ -476,7 +488,7 @@ namespace immagine
 					continue;
 				}
 
-				Label_Info labels = _neighbouring_labels(vec, i, j);
+				Label_Info labels = _image_neighbouring_labels(vec, i, j);
 				
 				//If no neighbouring foreground pixels, new label->use current_label
 				if (labels.count == 0)
@@ -521,8 +533,11 @@ namespace immagine
 			}
 		}
 
-		disjoint_set_free(uf);
+		Image self = _image_from_array3d(vec, image.width, image.height);
 
-		return vec;
+		disjoint_set_free(uf);
+		array3d_free(vec, image.width, image.height, image.channels);
+
+		return self;
 	}
 }
