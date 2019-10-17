@@ -13,7 +13,7 @@
 #include <vector>
 #include <algorithm>
 #include <random>
-#include <vld.h>
+//#include <vld.h>
 
 using namespace std::chrono;
 using namespace immagine;
