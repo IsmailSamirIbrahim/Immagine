@@ -99,6 +99,9 @@ namespace immagine
 	image_rotate_left(const Image& image);
 
 	IMMAGINE_EXPORT Image
+	image_rotate(const Image& image, float theta);
+
+	IMMAGINE_EXPORT Image
 	image_resize(const Image& image, uint32_t width, uint32_t height, INTERPOLATION_METHOD method);
 
 	IMMAGINE_EXPORT Image

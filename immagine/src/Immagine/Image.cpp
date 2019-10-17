@@ -409,6 +409,30 @@ namespace immagine
 	}
 
 	Image
+	image_rotate(const Image& image, float theta)
+	{
+		Image self = image_new(image.width, image.height, image.channels);
+
+		float rads = theta * 3.1415926 / 180.0; // fixed constant PI
+		float xcenter = (float)(image.width) / 2.0;   // use float here!
+		float ycenter = (float)(image.height) / 2.0;
+
+		for (uint8_t k = 0; k < image.channels; ++k)
+			for (size_t i = 0; i < image.height; ++i)
+				for (size_t j = 0; j < image.width; ++j)
+				{
+					int rorig = ycenter + ((float)(i)-ycenter)*cos(rads) - ((float)(j)-xcenter)*sin(-rads);
+					int corig = xcenter + ((float)(i)-ycenter)*sin(-rads) + ((float)(j)-xcenter)*cos(rads);
+					// now get the pixel value if you can
+					uint8_t pixel = 0; // in case there is no original pixel
+					if (rorig >= 0 && rorig < image.height && corig >= 0 && corig < image.width)
+						pixel = image(rorig, corig, k);
+					self(i, j, k) = pixel;
+				}
+		return self;
+	}
+
+	Image
 	image_resize(const Image & image, uint32_t width, uint32_t height, INTERPOLATION_METHOD method)
 	{
 		switch (method)

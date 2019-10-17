@@ -52,29 +52,22 @@ color_image(const Image& image)
 int
 main(int argc, char** argv)
 {
-	string file_path = string(IMAGE_DIR) + string("/images/7.jpg");
+	string file_path = string(IMAGE_DIR) + string("/images/big.jpg");
 	Image image = image_load(file_path.c_str());
 	
-	Image img1 = image_grayscale(image);
-	Image img2 = image_binarize(img1);
-
 	auto start = high_resolution_clock::now();
 
-	Image img3 = image_connected_component(img2);
-
+	Image result = image_rotate(image, -45);
+		
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
 	printf("Time = %lld  seconds\n", duration.count());
 
-	Image result = color_image(img3);
 
 	string out_path = string(IMAGE_DIR) + string("/images/result.bmp");
 	image_save(out_path.c_str(), result, IMAGE_FORMAT::BMP);
 
 	image_free(image);
-	image_free(img1);
-	image_free(img2);
-	image_free(img3);
 	image_free(result);
 	return 0;
 }
