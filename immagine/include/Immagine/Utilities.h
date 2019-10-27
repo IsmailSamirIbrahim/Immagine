@@ -4,7 +4,6 @@
 #include "Immagine/Kernel.h"
 
 #include <stdint.h>
-#include <vector>
 #include <map>
 
 using namespace std;
@@ -26,7 +25,7 @@ namespace immagine
     }
 
 	inline static void
-	calculate_summed_area(const Image& image, vector<vector<vector<uint32_t>>>& summed_table)
+	calculate_summed_area(const Image& image, uint32_t*** summed_table)
 	{
         uint32_t value = 0;
 		for (uint8_t k = 0; k < image.channels; ++k) {
@@ -48,7 +47,7 @@ namespace immagine
 	}
 
 	inline static uint32_t
-	calculate_mean(size_t i, size_t j, size_t k, size_t kernel_height, size_t kernel_width, const vector<vector<vector<uint32_t>>>& summed_table)
+	calculate_mean(size_t i, size_t j, size_t k, size_t kernel_height, size_t kernel_width, uint32_t*** summed_table)
 	{
         uint32_t mean = 0;
         if (i > 0 && j > 0)

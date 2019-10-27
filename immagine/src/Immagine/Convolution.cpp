@@ -85,12 +85,20 @@ namespace immagine
 	Image
 	image_box_filter(const Image& image, size_t kernel_width, size_t kernel_height)
 	{
-		Image h_image = image_horizental_filter(image, kernel_width);
-		Image self = image_vertical_filter(h_image, kernel_height);
+		Image self = image_new(image.width, image.height, image.channels);
 
-		_image_handle_border(self, kernel_width, kernel_height);
+		Image padded_image = image_pad(image, kernel_width / 2, kernel_height / 2, image(0, 0));
 
-		image_free(h_image);
+		uint32_t*** summed_table = array3d_new(padded_image.width, padded_image.height, padded_image.channels);
+		calculate_summed_area(padded_image, summed_table);
+
+		for (uint8_t k = 0; k < padded_image.channels; ++k)
+			for (size_t i = 0; i < padded_image.height - kernel_height + 1; ++i)
+				for (size_t j = 0; j < padded_image.width - kernel_width + 1; ++j)
+					self(i, j, k) = calculate_mean(i, j, k, kernel_height, kernel_width, summed_table);
+
+		array3d_free(summed_table, padded_image.width, padded_image.height, padded_image.channels);
+		image_free(padded_image);
 
 		return self;
 	}

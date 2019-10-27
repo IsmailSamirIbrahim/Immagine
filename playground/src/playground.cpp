@@ -52,12 +52,12 @@ color_image(const Image& image)
 int
 main(int argc, char** argv)
 {
-	string file_path = string(IMAGE_DIR) + string("/images/big.jpg");
+	string file_path = string(IMAGE_DIR) + string("/images/10.png");
 	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
 
-	Image result = image_rotate(image, -45);
+	Image result = image_gaussian_filter(image, 12);
 		
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
