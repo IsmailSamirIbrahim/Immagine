@@ -489,7 +489,7 @@ namespace immagine
 
 		uint8_t threshold = ((float)sum / (float)size + 0.5f);
 		for (size_t i = 0; i < size; ++i)
-			self.data[i] = (image.data[i] > threshold) ? 1: 0;
+			self.data[i] = (image.data[i] > threshold) ? WHITE: BLACK;
 
 		return self;
 	}

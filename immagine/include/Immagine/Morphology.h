@@ -7,5 +7,5 @@
 namespace immagine
 {
 	IMMAGINE_EXPORT Image
-	image_erode(const Image& image, const Kernel& SE);
+	image_erode(Image& image, const Kernel& SE);
 }

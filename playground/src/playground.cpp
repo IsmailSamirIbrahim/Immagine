@@ -54,7 +54,7 @@ color_image(const Image& image)
 int
 main(int argc, char** argv)
 {
-	string file_path = string(IMAGE_DIR) + string("/images/_4.jpg");
+	string file_path = string(IMAGE_DIR) + string("/images/4.png");
 	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
