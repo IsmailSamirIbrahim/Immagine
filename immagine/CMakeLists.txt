@@ -10,6 +10,7 @@ set(HEADER_FILES
 	include/Immagine/Convolution.h
 	include/Immagine/Utilities.h
 	include/Immagine/Disjoint_Set.h
+	include/Immagine/Morphology.h
 )
 
 # list the source files
@@ -19,6 +20,7 @@ set(SOURCE_FILES
 	src/Immagine/Point_Processing.cpp
 	src/Immagine/Convolution.cpp
 	src/Immagine/Disjoint_Set.cpp
+	src/Immagine/Morphology.cpp
 )
 
 

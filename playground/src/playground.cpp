@@ -5,6 +5,8 @@
 #include "Immagine/Convolution.h"
 #include "Immagine/Disjoint_Set.h"
 #include "Immagine/Utilities.h"
+#include "Immagine/Kernel.h"
+#include "Immagine/Morphology.h"
 
 #include <chrono>
 #include <string>
@@ -52,12 +54,20 @@ color_image(const Image& image)
 int
 main(int argc, char** argv)
 {
-	string file_path = string(IMAGE_DIR) + string("/images/big.jpg");
+	string file_path = string(IMAGE_DIR) + string("/images/_4.jpg");
 	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
 
-	Image result = image_rotate(image, -45);
+	Kernel SE = kernel_new(3, 3);
+	SE(0, 0) = 0; SE(0, 1) = 255; SE(0, 2) = 0;
+	SE(1, 0) = 255; SE(1, 1) = 255; SE(1, 2) = 255;
+	SE(2, 0) = 0; SE(2, 1) = 255; SE(2, 2) = 0;
+
+	Image img1 = image_grayscale(image);
+	Image img2 = image_binarize(img1);
+
+	Image result = image_erode(img2, SE);
 		
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
