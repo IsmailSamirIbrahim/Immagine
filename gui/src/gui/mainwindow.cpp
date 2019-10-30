@@ -34,7 +34,7 @@ void MainWindow::on_actionOpen_triggered()
     Image self = image_data_join(this->mImage);
 
     QImage qmImage = QImage(self.data, self.width, self.height, QImage::Format::Format_RGB888);
-    this->ui->label->setPixmap(QPixmap::fromImage(qmImage));
+    this->ui->label->setPixmap(QPixmap::fromImage(qmImage).scaled(this->ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
     image_free(self);
 }
