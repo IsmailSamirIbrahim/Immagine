@@ -120,6 +120,12 @@ namespace immagine
 	}
 
 	Image
+	image_sobel_filter(const Image& image)
+	{
+		return Image();
+	}
+
+	Image
 	image_median_filter(const Image& image, size_t kernel_width, size_t kernel_height)
 	{
 		Image self = image_new(image.width, image.height, image.channels);

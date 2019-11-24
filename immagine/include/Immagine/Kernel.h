@@ -43,4 +43,7 @@ namespace immagine
 	IMMAGINE_EXPORT int*
 	kernel_gaussian_gen(float standard_deviation, size_t n);
 
+	IMMAGINE_EXPORT Kernel
+	kernel_sobel_gen();
+
 }

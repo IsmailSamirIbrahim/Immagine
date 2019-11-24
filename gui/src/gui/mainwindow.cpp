@@ -73,8 +73,9 @@ void MainWindow::on_actionFlip_Horizental_triggered()
 
     Image self = image_data_join(tmp);
 
-    QImage qmImage = QImage(self.data, self.width, self.height, QImage::Format::Format_RGB888);
-    this->ui->label->setPixmap(QPixmap::fromImage(qmImage));
+	QImage qmImage = QImage(self.data, self.width, self.height, QImage::Format::Format_RGB888);
+	this->ui->label->setPixmap(QPixmap::fromImage(qmImage).scaled(this->ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+
 
     image_free(this->mImage);
     image_free(self);
@@ -87,8 +88,8 @@ void MainWindow::on_actionFlip_Vertical_triggered()
 
     Image self = image_data_join(tmp);
 
-    QImage qmImage = QImage(self.data, self.width, self.height, QImage::Format::Format_RGB888);
-    this->ui->label->setPixmap(QPixmap::fromImage(qmImage));
+	QImage qmImage = QImage(self.data, self.width, self.height, QImage::Format::Format_RGB888);
+	this->ui->label->setPixmap(QPixmap::fromImage(qmImage).scaled(this->ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
     image_free(this->mImage);
     image_free(self);
@@ -101,8 +102,8 @@ void MainWindow::on_actionRotate_Left_triggered()
 
     Image self = image_data_join(tmp);
 
-    QImage qmImage = QImage(self.data, self.width, self.height, QImage::Format::Format_RGB888);
-    this->ui->label->setPixmap(QPixmap::fromImage(qmImage));
+	QImage qmImage = QImage(self.data, self.width, self.height, QImage::Format::Format_RGB888);
+	this->ui->label->setPixmap(QPixmap::fromImage(qmImage).scaled(this->ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
     image_free(this->mImage);
     image_free(self);
@@ -115,8 +116,8 @@ void MainWindow::on_actionRotate_Rigth_triggered()
 
     Image self = image_data_join(tmp);
 
-    QImage qmImage = QImage(self.data, self.width, self.height, QImage::Format::Format_RGB888);
-    this->ui->label->setPixmap(QPixmap::fromImage(qmImage));
+	QImage qmImage = QImage(self.data, self.width, self.height, QImage::Format::Format_RGB888);
+	this->ui->label->setPixmap(QPixmap::fromImage(qmImage).scaled(this->ui->label->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
     image_free(this->mImage);
     image_free(self);
