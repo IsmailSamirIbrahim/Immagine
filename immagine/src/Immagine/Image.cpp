@@ -12,41 +12,46 @@
 
 #include "Immagine/Utilities.h"
 
+#include <vector>
+#include <stdlib.h>
+#include <cmath>
+#include <algorithm>
+
 using namespace std;
 
 namespace immagine
 {
 	// Helper Functions
 	inline static size_t
-	_image_red_idx(const Image& image)
+		_image_red_idx(const Image& image)
 	{
 		size_t index = image.width * image.height * 0;
 		return index;
 	}
 
 	inline static size_t
-	_image_green_idx(const Image& image)
+		_image_green_idx(const Image& image)
 	{
 		size_t index = image.width * image.height * 1;
 		return index;
 	}
 
 	inline static size_t
-	_image_blue_idx(const Image& image)
+		_image_blue_idx(const Image& image)
 	{
 		size_t index = image.width * image.height * 2;
 		return index;
 	}
 
 	inline static size_t
-	_image_alpha_idx(const Image& image)
+		_image_alpha_idx(const Image& image)
 	{
 		size_t index = image.width * image.height * 3;
 		return index;
 	}
-	
+
 	inline static Image
-	_image_data_fork(unsigned char* data, uint32_t width, uint32_t height, uint8_t channels)
+		_image_data_fork(unsigned char* data, uint32_t width, uint32_t height, uint8_t channels)
 	{
 		Image self = image_new(width, height, channels);
 
@@ -60,7 +65,7 @@ namespace immagine
 	}
 
 	inline static Image
-	_image_data_join(const Image& image)
+		_image_data_join(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -74,7 +79,7 @@ namespace immagine
 	}
 
 	inline static Image
-	_image_resize_nearest_neighbour(const Image& image, uint32_t width, uint32_t height)
+		_image_resize_nearest_neighbour(const Image& image, uint32_t width, uint32_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
@@ -90,7 +95,7 @@ namespace immagine
 	}
 
 	inline static Image
-	_image_resize_bilinear(const Image& image, uint32_t width, uint32_t height)
+		_image_resize_bilinear(const Image& image, uint32_t width, uint32_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
@@ -129,7 +134,7 @@ namespace immagine
 	};
 
 	inline static Label_Info
-	_image_neighbouring_labels(uint32_t*** vec, size_t i, size_t j)
+		_image_neighbouring_labels(uint32_t*** vec, size_t i, size_t j)
 	{
 		Label_Info labels{};
 		labels.count = 0;
@@ -162,7 +167,7 @@ namespace immagine
 	}
 
 	inline static Image
-	_image_from_array3d(uint32_t*** vec, size_t width, size_t height)
+		_image_from_array3d(uint32_t*** vec, size_t width, size_t height)
 	{
 		Image self = image_new(width, height, 1);
 
@@ -176,7 +181,7 @@ namespace immagine
 
 	// API
 	Image
-	image_new(uint32_t width, uint32_t height, uint8_t channels)
+		image_new(uint32_t width, uint32_t height, uint8_t channels)
 	{
 		Image self{};
 
@@ -185,13 +190,13 @@ namespace immagine
 		self.channels = channels;
 		self.data = (uint8_t*)::malloc(width * height * channels * sizeof(uint8_t));
 
-        ::memset(self.data, 255, width * height * channels);
+		::memset(self.data, 255, width * height * channels);
 
 		return self;
 	}
 
 	Image
-	image_clone(const Image& image)
+		image_clone(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -201,7 +206,7 @@ namespace immagine
 	}
 
 	Image
-	image_from_ptr(const void* data, uint32_t width, uint32_t height, uint8_t channels)
+		image_from_ptr(const void* data, uint32_t width, uint32_t height, uint8_t channels)
 	{
 		Image self = image_new(width, height, channels);
 
@@ -211,15 +216,15 @@ namespace immagine
 	}
 
 	void
-	image_free(Image& self)
+		image_free(Image& self)
 	{
-		if (self.data) 
+		if (self.data)
 			::free(self.data);
 		self.data = nullptr;
 	}
 
 	Image
-	image_load(const char* file_path)
+		image_load(const char* file_path)
 	{
 		int width, height, channels;
 		unsigned char* data = stbi_load(file_path, &width, &height, &channels, 0);
@@ -234,7 +239,7 @@ namespace immagine
 	}
 
 	bool
-	image_save(const char* file_path, const Image& image, IMAGE_FORMAT format)
+		image_save(const char* file_path, const Image& image, IMAGE_FORMAT format)
 	{
 		Image self = _image_data_join(image);
 
@@ -265,7 +270,7 @@ namespace immagine
 	}
 
 	Image
-	image_red_channel(const Image& image)
+		image_red_channel(const Image& image)
 	{
 		assert(image.channels >= 3 && "image is grayscale with 8-bit depth");
 
@@ -281,7 +286,7 @@ namespace immagine
 	}
 
 	Image
-	image_green_channel(const Image& image)
+		image_green_channel(const Image& image)
 	{
 		assert(image.channels >= 3 && "image is grayscale with 8-bit depth");
 
@@ -297,7 +302,7 @@ namespace immagine
 	}
 
 	Image
-	image_blue_channel(const Image& image)
+		image_blue_channel(const Image& image)
 	{
 		assert(image.channels >= 3 && "image dosen't have blue channel");
 
@@ -313,7 +318,7 @@ namespace immagine
 	}
 
 	Image
-	image_alpha_channel(const Image& image)
+		image_alpha_channel(const Image& image)
 	{
 		assert(image.channels == 4 && "image dosen't have an alpha channel");
 
@@ -329,7 +334,7 @@ namespace immagine
 	}
 
 	Image
-	image_grayscale(const Image& image)
+		image_grayscale(const Image& image)
 	{
 		// Image is already grayscale image
 		if (image.channels == 1) {
@@ -344,14 +349,14 @@ namespace immagine
 		size_t b = _image_blue_idx(image);
 		size_t size = image.width * image.height;
 
-		for(size_t i = 0; i < size; ++i, ++r, ++g, ++b)
+		for (size_t i = 0; i < size; ++i, ++r, ++g, ++b)
 			self.data[i] = uint8_t(float((image.data[r]) + (image.data[g]) + (image.data[b])) / 3.0f);
 
 		return self;
 	}
 
 	Image
-	image_flip_horizontally(const Image& image)
+		image_flip_horizontally(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -364,7 +369,7 @@ namespace immagine
 	}
 
 	Image
-	image_flip_vertically(const Image& image)
+		image_flip_vertically(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -377,13 +382,13 @@ namespace immagine
 	}
 
 	Image
-	image_mirror(const Image& image)
+		image_mirror(const Image& image)
 	{
 		return image_flip_horizontally(image);
 	}
 
 	Image
-	image_rotate_right(const Image& image)
+		image_rotate_right(const Image& image)
 	{
 		Image self = image_new(image.height, image.width, image.channels);
 
@@ -396,7 +401,7 @@ namespace immagine
 	}
 
 	Image
-	image_rotate_left(const Image& image)
+		image_rotate_left(const Image& image)
 	{
 		Image self = image_new(image.height, image.width, image.channels);
 
@@ -409,7 +414,7 @@ namespace immagine
 	}
 
 	Image
-	image_rotate(const Image& image, float theta)
+		image_rotate(const Image& image, float theta)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -433,7 +438,7 @@ namespace immagine
 	}
 
 	Image
-	image_resize(const Image & image, uint32_t width, uint32_t height, INTERPOLATION_METHOD method)
+		image_resize(const Image & image, uint32_t width, uint32_t height, INTERPOLATION_METHOD method)
 	{
 		switch (method)
 		{
@@ -450,7 +455,7 @@ namespace immagine
 	}
 
 	Image
-	image_crop(const Image & image, const Rectangle& rect)
+		image_crop(const Image & image, const Rectangle& rect)
 	{
 		Image self = image_new(rect.width, rect.height, image.channels);
 
@@ -463,7 +468,7 @@ namespace immagine
 	}
 
 	Image
-	image_pad(const Image& image, uint32_t expand_w, uint32_t expand_h, uint8_t val)
+		image_pad(const Image& image, uint32_t expand_w, uint32_t expand_h, uint8_t val)
 	{
 		Image self = image_new(image.width + 2 * expand_w, image.height + 2 * expand_h, image.channels);
 
@@ -478,7 +483,7 @@ namespace immagine
 	}
 
 	Image
-	image_binarize(const Image& image)
+		image_binarize(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -489,13 +494,13 @@ namespace immagine
 
 		uint8_t threshold = ((float)sum / (float)size + 0.5f);
 		for (size_t i = 0; i < size; ++i)
-			self.data[i] = (image.data[i] > threshold) ? WHITE: BLACK;
+			self.data[i] = (image.data[i] > threshold) ? WHITE : BLACK;
 
 		return self;
 	}
 
 	Image
-	image_connected_component(const Image & image)
+		image_connected_component(const Image & image)
 	{
 		uint32_t*** vec = array3d_new(image.width, image.height, image.channels);
 
@@ -513,7 +518,7 @@ namespace immagine
 				}
 
 				Label_Info labels = _image_neighbouring_labels(vec, i, j);
-				
+
 				//If no neighbouring foreground pixels, new label->use current_label
 				if (labels.count == 0)
 				{
@@ -524,7 +529,7 @@ namespace immagine
 				else
 				{
 					uint32_t smallest_label;
-					
+
 					if (labels.above != 0 && labels.left == 0)
 						smallest_label = labels.above;
 					else if (labels.left != 0 && labels.above == 0)
@@ -563,5 +568,173 @@ namespace immagine
 		array3d_free(vec, image.width, image.height, image.channels);
 
 		return self;
+	}
+
+	int
+		image_otsu_threshold(const Image & image)
+	{
+		// calculate histogram
+		int histogram[256] = { 0 };
+		for (int i = 0; i < image.height; ++i)
+			for (int j = 0; j < image.width; ++j)
+				++histogram[image(i, j, 0)];
+
+		// calculate probability
+		double p[256] = { 0 };
+		for (int i = 0; i < 256; i++)
+			p[i] = (double)histogram[i] / (double)image.width * image.height;
+
+		double total_mean = 0;
+		// calculate total mean for whole image
+		for (int i = 0; i < 256; i++)
+			total_mean += i * p[i];
+
+
+
+		int optimalTreshold1 = 0, optimalTreshold2 = 0, optimalTreshold3 = 0;
+		double maxBetweenVar = 0;
+		double c = 0;
+
+		double w0 = 0, m0 = 0, c0 = 0, p0 = 0;
+		double w1 = 0, m1 = 0, c1 = 0, p1 = 0;
+		double w2 = 0, m2 = 0, c2 = 0, p2 = 0;
+
+		for (int tr1 = 0; tr1 < 256; tr1++)
+		{
+			p0 += p[tr1];
+			w0 += (tr1 * p[tr1]);
+			if (p0 != 0)
+				m0 = w0 / p0;
+			c0 = p0 * (m0 - total_mean) * (m0 - total_mean);
+
+			c1 = 0, w1 = 0, m1 = 0, p1 = 0;
+			for (int tr2 = tr1 + 1; tr2 < 256; tr2++)
+			{
+				p1 += p[tr2];
+				w1 += (tr2 * p[tr2]);
+				if (p1 != 0)
+					m1 = w1 / p1;
+				c1 = p1 * (m1 - total_mean) * (m1 - total_mean);
+
+				c2 = 0, w2 = 0, m2 = 0, p2 = 0;
+				for (int tr3 = tr2 + 1; tr3 < 256; tr3++)
+				{
+					p2 += p[tr3];
+					w2 += (tr3 * p[tr3]);
+					if (p2 != 0)
+						m2 = w2 / p2;
+					c2 = p2 * (m2 - total_mean) * (m2 - total_mean);
+
+					double p3 = 1 - (p0 + p1 + p2);
+					double w3 = total_mean - (w0 + w1 + w2);
+					double m3 = w3 / p3;
+					double c3 = p3 * (m3 - total_mean) * (m3 - total_mean);
+
+					double c = c0 + c1 + c2 + c3;
+
+					if (maxBetweenVar < c)
+					{
+						maxBetweenVar = c;
+						optimalTreshold1 = tr1;
+						optimalTreshold2 = tr2;
+						optimalTreshold3 = tr3;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+
+	std::vector<std::vector<uint8_t>> clusters(5);
+
+	inline static std::vector<uint8_t>
+	_get_centroids(const Image& image, int k)
+	{
+		std::vector<uint8_t> centers;
+		for (int i = 0; i < k; ++i)
+		{
+			int x = rand() % image.width;
+			int y = rand() % image.height;
+			centers.push_back(image(y, x));
+		}
+		return centers;
+	}
+
+	inline static void
+	_argmindistance(uint8_t pixel, std::vector<uint8_t> centriods)
+	{
+		std::vector<float> distance;
+		
+		for (int c = 0; c < centriods.size(); ++c) {
+			float dist = sqrt(pow((centriods[c] - pixel), 2));
+			distance.push_back(dist);
+		}
+
+			int minindex = -1;
+			float MIN = 256;
+			for (int i = 0; i < distance.size(); ++i)
+				if (distance[i] < MIN) {
+					MIN = distance[i];
+					minindex = i;
+				}
+
+			clusters[minindex].push_back(pixel);
+	}
+	
+	inline static uint8_t
+	_get_average(std::vector<uint8_t> cluster)
+	{
+		int sum = 0;
+		for (int i = 0; i < cluster.size(); ++i)
+			sum += cluster[i];
+
+		uint8_t res = (sum / cluster.size());
+		return res;
+	}
+
+	int
+	image_kmeans(const Image& image)
+	{
+		int k = 5;
+		auto centroids = _get_centroids(image, k);
+
+		int l = 10;
+		while (l > 0)
+		{
+			for(int i = 0; i < 5; ++i)
+				clusters[i].clear();
+
+			for (int x = 0; x < image.height; ++x)
+				for (int y = 0; y < image.width; ++y)
+					_argmindistance(image(x, y), centroids);
+
+			int index = 0;
+			for (const auto& cluster : clusters)
+				if (cluster.size() != 0)
+				{
+					centroids[index] = _get_average(cluster);
+					index += 1;
+				}
+			--l;
+		}
+
+		int min = *std::min_element(clusters[4].begin(), clusters[4].end());
+		int max = *std::max_element(clusters[4].begin(), clusters[4].end());
+
+		
+		Image self = image_new(image.width, image.height, 1);
+
+		size_t size = image.width * image.height * 1;
+		
+		for (size_t i = 0; i < size; ++i)
+			if (image.data[i] >= min && image.data[i] < max)
+				self.data[i] = WHITE;
+			else
+				self.data[i] = BLACK;
+
+		image_save("D:/4.bmp", self, IMAGE_FORMAT::BMP);
+
+		return 0;
+
 	}
 }

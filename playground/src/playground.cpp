@@ -52,22 +52,21 @@ color_image(const Image& image)
 int
 main(int argc, char** argv)
 {
-	string file_path = string(IMAGE_DIR) + string("/images/10.png");
+	string file_path = string(IMAGE_DIR) + string("/images/1.jpg");
 	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
 
-	Image result = image_gaussian_filter(image, 12);
-		
+	int res = image_kmeans(image);
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
 	printf("Time = %lld  seconds\n", duration.count());
 
 
-	string out_path = string(IMAGE_DIR) + string("/images/result.bmp");
-	image_save(out_path.c_str(), result, IMAGE_FORMAT::BMP);
+	//string out_path = string(IMAGE_DIR) + string("/images/result.bmp");
+	//image_save(out_path.c_str(), res, IMAGE_FORMAT::BMP);
 
 	image_free(image);
-	image_free(result);
+
 	return 0;
 }
