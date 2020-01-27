@@ -42,6 +42,12 @@ if(WIN32)
 	target_compile_definitions(Immagine
 		PRIVATE
 			OS_WINDOWS=1
+			_CRT_SECURE_NO_WARNINGS
+	)
+elseif(UNIX)
+	target_compile_definitions(Immagine
+		PRIVATE
+			OS_LINUX=1
 	)
 endif()
 
