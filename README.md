@@ -29,4 +29,26 @@ int main()
 	
     return 0;
 }
-```	
+```
+### Result
+<img src="/images/lena.png" width="300" height="300"> 		 <img src="/images/lena_grayscale.png" width="300" height="300">
+
+```cpp
+#include <immagine/Image.h>
+
+int main()
+{
+    immagine::Image image = immagine::image_load("path/to/image.png");
+
+    immagine::Image blured_image = immagine::image_gaussian_filter(image, 7);
+
+    immagine::image_write("path/to/image.bmp", blured_image, IMAGE_FORMAT::BMP);
+
+    immagine::image_free(image);
+    immagine::image_free(blured_image);
+	
+    return 0;
+}
+```
+### Result
+<img src="/images/image.png" width="300" height="300"> 		 <img src="/images/blured_image.png" width="300" height="300">
