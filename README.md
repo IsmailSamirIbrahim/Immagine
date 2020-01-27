@@ -35,6 +35,7 @@ int main()
 
 ```cpp
 #include <immagine/Image.h>
+#include <immagine/Convolution.h>
 
 int main()
 {
