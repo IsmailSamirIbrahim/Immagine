@@ -2,8 +2,6 @@
 #include "Immagine/Kernel.h"
 #include "Immagine/Utilities.h"
 
-#include <omp.h>
-
 namespace immagine
 {
 	// Helper Functions
@@ -135,7 +133,6 @@ namespace immagine
 		size_t nh = image.height - kernel_height;
 		size_t nw = image.width - kernel_width;
 
-#pragma omp parallel for
 		for (int8_t k = 0; k < image.channels; ++k) {
 			map<uint8_t, size_t> hist;
 			for (size_t i = 0; i < nh; ++i) {
