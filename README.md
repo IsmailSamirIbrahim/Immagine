@@ -53,3 +53,30 @@ int main()
 ```
 ### Result
 <img src="/images/image.png" width="300" height="300"> 		 <img src="/images/blured_image.png" width="300" height="300">
+
+```cpp
+#include <immagine/Image.h>
+
+int main()
+{
+    immagine::Image image = immagine::image_load("path/to/image.png");
+
+    immagine::Image binarized_image = immagine::image_binarize(image);
+    
+    immagine::Image connected_component_image = immagine::image_connected_component(binarized_image);
+
+    immagine::Image colored_image = immagine::image_color(connected_component_image);
+    
+    immagine::image_write("path/to/image.bmp", colored_image, IMAGE_FORMAT::BMP);
+
+    immagine::image_free(image);
+    immagine::image_free(binarized_image);
+    immagine::image_free(connected_component_image);
+    immagine::image_free(colored_image);
+    
+	
+    return 0;
+}
+```
+### Result
+<img src="/images/black_and_white.jpg" width="300" height="300">  	<img src="/images/colored.png" width="300" height="300">
