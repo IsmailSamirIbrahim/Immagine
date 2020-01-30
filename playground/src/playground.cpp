@@ -54,7 +54,7 @@ color_image(const Image& image)
 int
 main(int argc, char** argv)
 {
-	string file_path = string(IMAGE_DIR) + string("/images/4.png");
+	string file_path = string(IMAGE_DIR) + string("/images/_4.jpg");
 	Image image = image_load(file_path.c_str());
 	
 	auto start = high_resolution_clock::now();
@@ -67,7 +67,7 @@ main(int argc, char** argv)
 	Image img1 = image_grayscale(image);
 	Image img2 = image_binarize(img1);
 
-	Image result = image_erode(img2, SE);
+	Image result = image_erode(img2, SE, 20);
 		
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<seconds>(stop - start);
