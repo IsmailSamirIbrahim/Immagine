@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <cmath>
 #include <algorithm>
+#include <list>
 
 using namespace std;
 
@@ -736,5 +737,68 @@ namespace immagine
 
 		return 0;
 
+	}
+
+	short x[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
+	short y[8] = { 0, -1, -1, -1, 0, 1, 1, 1 };
+
+	vector<pair<size_t, size_t>>
+	_get_neightbours(const Image& image, size_t seed_x, size_t seed_y,  uint8_t t)
+	{
+		vector<pair<size_t, size_t>> result;
+
+		if (seed_x - 1 >= 0 && seed_y - 1 >= 0 && image(seed_x - 1, seed_y - 1) >= t)
+			result.push_back(make_pair(seed_x - 1, seed_y - 1));
+		if (seed_y - 1 >= 0 && image(seed_x, seed_y - 1) >= t)
+			result.push_back(make_pair(seed_x, seed_y - 1));
+		if (seed_x + 1 < image.width && seed_y - 1 >= 0 && image(seed_x + 1, seed_y - 1) >= t)
+			result.push_back(make_pair(seed_x + 1, seed_y - 1));
+
+		if (seed_x - 1 >= 0 && image(seed_x - 1, seed_y) >= t)
+			result.push_back(make_pair(seed_x - 1, seed_y));
+		if (seed_x + 1 < image.width && image(seed_x + 1, seed_y) >= t)
+			result.push_back(make_pair(seed_x + 1, seed_y));
+
+		if (seed_x - 1 >= 0 && seed_y + 1 < image.height && image(seed_x - 1, seed_y + 1) >= t)
+			result.push_back(make_pair(seed_x - 1, seed_y + 1));
+		if (seed_y + 1 < image.height && image(seed_x, seed_y + 1) >= t)
+			result.push_back(make_pair(seed_x, seed_y + 1));
+		if (seed_x + 1 < image.width && seed_y + 1 < image.height && image(seed_x + 1, seed_y + 1) >= t)
+			result.push_back(make_pair(seed_x + 1, seed_y + 1));
+
+		return result;
+	}
+
+	Image
+	image_region_growing(const Image& image, size_t seed_x, size_t seed_y)
+	{
+		Image self = image_new(image.width, image.height, 1);
+		::memset(self.data, 0, self.width * self.height);
+
+		Image visited = image_new(image.width, image.height, 1);
+		::memset(visited.data, 0, visited.width * visited.height);
+
+		list<pair<size_t, size_t>> queue;
+
+		queue.push_back(make_pair(seed_x, seed_y));
+		visited(seed_x, seed_y) = 1;
+
+		while (!queue.empty())
+		{
+			auto curr_seed = queue.front();
+			queue.pop_front();
+			self(curr_seed.first, curr_seed.second) = 255;
+
+			auto list = _get_neightbours(image, curr_seed.first, curr_seed.second, 50);
+			for (const auto& pair : list)
+			{
+				if (visited(pair.first, pair.second) == 0)
+				{
+					visited(pair.first, pair.second) = 1;
+					queue.push_back(pair);
+				}
+			}
+		}
+		return self;
 	}
 }

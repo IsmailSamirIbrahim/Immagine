@@ -13,9 +13,15 @@ add_subdirectory(external/stb)
 
 # internal libraries
 add_subdirectory(immagine)
+add_subdirectory(playground)
 
 # Organize Targets into folders
 set_target_properties(
 	Immagine
 	PROPERTIES FOLDER immagine
+)
+
+set_target_properties(
+	playground
+	PROPERTIES FOLDER Testing
 )
