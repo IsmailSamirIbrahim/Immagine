@@ -295,3 +295,9 @@ __pycache__/
 
 ### VisualStudio Patch ###
 build/
+
+# GUI and testing
+gui/
+playground/
+resources/
+

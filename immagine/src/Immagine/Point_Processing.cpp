@@ -114,7 +114,7 @@ namespace immagine
 		float s2 = S / 2;
 		float T = 1;
 
-		vec3ui summed_table(image.height, vec2ui(image.width, vec1ui(image.channels)));
+		uint32_t*** summed_table = array3d_new(image.width, image.height, image.channels);
 		calculate_summed_area(image, summed_table);
 
 		for(size_t i = 0; i < image.height; ++i)
@@ -134,6 +134,8 @@ namespace immagine
 				else
 					self(i, j) = 255;
 			}
+
+		array3d_free(summed_table, image.width, image.height, image.channels);
 
 		return self;
 	}

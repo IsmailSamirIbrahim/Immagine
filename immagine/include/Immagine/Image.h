@@ -4,6 +4,8 @@
 #include "Immagine/Imagedef.h"
 #include <assert.h>
 
+#include <tuple>
+
 namespace immagine
 {
 	struct Image
@@ -121,4 +123,10 @@ namespace immagine
 
 	IMMAGINE_EXPORT Image
 	image_connected_component(const Image& image);
+
+	IMMAGINE_EXPORT int
+	image_otsu_threshold(const Image& image);
+
+	IMMAGINE_EXPORT int
+	image_kmeans(const Image& image);
 }

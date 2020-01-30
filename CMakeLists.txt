@@ -14,17 +14,11 @@ add_subdirectory(external/stb)
 # internal libraries
 add_subdirectory(immagine)
 add_subdirectory(playground)
-add_subdirectory(gui)
 
 # Organize Targets into folders
 set_target_properties(
 	Immagine
 	PROPERTIES FOLDER immagine
-)
-
-set_target_properties(
-	gui
-	PROPERTIES FOLDER App
 )
 
 set_target_properties(

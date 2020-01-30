@@ -72,4 +72,20 @@ namespace immagine
 		return sizes;
 	}
 
+	Kernel
+	kernel_sobel_gen()
+	{
+		Kernel self = kernel_new(3, 3);
+
+		::memset(self.data, 0, 3 * 3);
+
+		self(0, 1) = 1;
+		self(1, 0) = 1;
+		self(1, 2) = 1;
+		self(2, 1) = 1;
+		self(1, 1) = -4;
+
+		return self;
+	}
+
 }

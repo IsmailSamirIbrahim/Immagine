@@ -19,4 +19,7 @@ namespace immagine
 
 	IMMAGINE_EXPORT Image
 	image_gaussian_filter(const Image& image, float standard_deviation);
+
+	IMMAGINE_EXPORT Image
+	image_sobel_filter(const Image& image);
 }
