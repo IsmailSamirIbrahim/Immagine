@@ -63,6 +63,22 @@ namespace immagine
         return mean;
 	}
 
+	inline static uint32_t
+	calculate_sum_area(size_t i, size_t j, size_t k, size_t kernel_height, size_t kernel_width, const vector<vector<vector<uint32_t>>>& summed_table)
+	{
+		uint32_t sum = 0;
+		if (i > 0 && j > 0)
+			sum += summed_table[i - 1][j - 1][k];
+		if (j > 0)
+			sum -= summed_table[i - 1 + kernel_height][j - 1][k];
+		if (i > 0)
+			sum -= summed_table[i - 1][j - 1 + kernel_width][k];
+
+		sum += summed_table[i + kernel_height - 1][j + kernel_width - 1][k];
+
+		return sum;
+	}
+
 	inline static uint8_t
 	median_get(const map<uint8_t, size_t>& hist, size_t middle)
 	{
