@@ -132,4 +132,7 @@ namespace immagine
 
 	IMMAGINE_EXPORT Image
 	image_region_growing(const Image& image, size_t seed_x, size_t seed_y);
+
+	IMMAGINE_EXPORT Image
+	image_color(const Image& image);
 }
