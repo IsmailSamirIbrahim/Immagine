@@ -24,35 +24,35 @@ namespace immagine
 {
 	// Helper Functions
 	inline static size_t
-		_image_red_idx(const Image& image)
+	_image_red_idx(const Image& image)
 	{
 		size_t index = image.width * image.height * 0;
 		return index;
 	}
 
 	inline static size_t
-		_image_green_idx(const Image& image)
+	_image_green_idx(const Image& image)
 	{
 		size_t index = image.width * image.height * 1;
 		return index;
 	}
 
 	inline static size_t
-		_image_blue_idx(const Image& image)
+	_image_blue_idx(const Image& image)
 	{
 		size_t index = image.width * image.height * 2;
 		return index;
 	}
 
 	inline static size_t
-		_image_alpha_idx(const Image& image)
+	_image_alpha_idx(const Image& image)
 	{
 		size_t index = image.width * image.height * 3;
 		return index;
 	}
 
 	inline static Image
-		_image_data_fork(unsigned char* data, uint32_t width, uint32_t height, uint8_t channels)
+	_image_data_fork(unsigned char* data, uint32_t width, uint32_t height, uint8_t channels)
 	{
 		Image self = image_new(width, height, channels);
 
@@ -66,7 +66,7 @@ namespace immagine
 	}
 
 	inline static Image
-		_image_data_join(const Image& image)
+	_image_data_join(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -80,7 +80,7 @@ namespace immagine
 	}
 
 	inline static Image
-		_image_resize_nearest_neighbour(const Image& image, uint32_t width, uint32_t height)
+	_image_resize_nearest_neighbour(const Image& image, uint32_t width, uint32_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
@@ -96,7 +96,7 @@ namespace immagine
 	}
 
 	inline static Image
-		_image_resize_bilinear(const Image& image, uint32_t width, uint32_t height)
+	_image_resize_bilinear(const Image& image, uint32_t width, uint32_t height)
 	{
 		Image self = image_new(width, height, image.channels);
 
@@ -135,7 +135,7 @@ namespace immagine
 	};
 
 	inline static Label_Info
-		_image_neighbouring_labels(uint32_t*** vec, size_t i, size_t j)
+	_image_neighbouring_labels(uint32_t*** vec, size_t i, size_t j)
 	{
 		Label_Info labels{};
 		labels.count = 0;
@@ -168,7 +168,7 @@ namespace immagine
 	}
 
 	inline static Image
-		_image_from_array3d(uint32_t*** vec, size_t width, size_t height)
+	_image_from_array3d(uint32_t*** vec, size_t width, size_t height)
 	{
 		Image self = image_new(width, height, 1);
 
@@ -182,7 +182,7 @@ namespace immagine
 
 	// API
 	Image
-		image_new(uint32_t width, uint32_t height, uint8_t channels)
+	image_new(uint32_t width, uint32_t height, uint8_t channels)
 	{
 		Image self{};
 
@@ -197,7 +197,7 @@ namespace immagine
 	}
 
 	Image
-		image_clone(const Image& image)
+	image_clone(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -207,7 +207,7 @@ namespace immagine
 	}
 
 	Image
-		image_from_ptr(const void* data, uint32_t width, uint32_t height, uint8_t channels)
+	image_from_ptr(const void* data, uint32_t width, uint32_t height, uint8_t channels)
 	{
 		Image self = image_new(width, height, channels);
 
@@ -217,7 +217,7 @@ namespace immagine
 	}
 
 	void
-		image_free(Image& self)
+	image_free(Image& self)
 	{
 		if (self.data)
 			::free(self.data);
@@ -225,7 +225,7 @@ namespace immagine
 	}
 
 	Image
-		image_load(const char* file_path)
+	image_load(const char* file_path)
 	{
 		int width, height, channels;
 		unsigned char* data = stbi_load(file_path, &width, &height, &channels, 0);
@@ -240,7 +240,7 @@ namespace immagine
 	}
 
 	bool
-		image_save(const char* file_path, const Image& image, IMAGE_FORMAT format)
+	image_save(const char* file_path, const Image& image, IMAGE_FORMAT format)
 	{
 		Image self = _image_data_join(image);
 
@@ -271,7 +271,7 @@ namespace immagine
 	}
 
 	Image
-		image_red_channel(const Image& image)
+	image_red_channel(const Image& image)
 	{
 		assert(image.channels >= 3 && "image is grayscale with 8-bit depth");
 
@@ -287,7 +287,7 @@ namespace immagine
 	}
 
 	Image
-		image_green_channel(const Image& image)
+	image_green_channel(const Image& image)
 	{
 		assert(image.channels >= 3 && "image is grayscale with 8-bit depth");
 
@@ -303,7 +303,7 @@ namespace immagine
 	}
 
 	Image
-		image_blue_channel(const Image& image)
+	image_blue_channel(const Image& image)
 	{
 		assert(image.channels >= 3 && "image dosen't have blue channel");
 
@@ -319,7 +319,7 @@ namespace immagine
 	}
 
 	Image
-		image_alpha_channel(const Image& image)
+	image_alpha_channel(const Image& image)
 	{
 		assert(image.channels == 4 && "image dosen't have an alpha channel");
 
@@ -335,7 +335,7 @@ namespace immagine
 	}
 
 	Image
-		image_grayscale(const Image& image)
+	image_grayscale(const Image& image)
 	{
 		// Image is already grayscale image
 		if (image.channels == 1) {
@@ -357,7 +357,7 @@ namespace immagine
 	}
 
 	Image
-		image_flip_horizontally(const Image& image)
+	image_flip_horizontally(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -370,7 +370,7 @@ namespace immagine
 	}
 
 	Image
-		image_flip_vertically(const Image& image)
+	image_flip_vertically(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -383,13 +383,13 @@ namespace immagine
 	}
 
 	Image
-		image_mirror(const Image& image)
+	image_mirror(const Image& image)
 	{
 		return image_flip_horizontally(image);
 	}
 
 	Image
-		image_rotate_right(const Image& image)
+	image_rotate_right(const Image& image)
 	{
 		Image self = image_new(image.height, image.width, image.channels);
 
@@ -402,7 +402,7 @@ namespace immagine
 	}
 
 	Image
-		image_rotate_left(const Image& image)
+	image_rotate_left(const Image& image)
 	{
 		Image self = image_new(image.height, image.width, image.channels);
 
@@ -415,7 +415,7 @@ namespace immagine
 	}
 
 	Image
-		image_rotate(const Image& image, float theta)
+	image_rotate(const Image& image, float theta)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -439,7 +439,7 @@ namespace immagine
 	}
 
 	Image
-		image_resize(const Image & image, uint32_t width, uint32_t height, INTERPOLATION_METHOD method)
+	image_resize(const Image & image, uint32_t width, uint32_t height, INTERPOLATION_METHOD method)
 	{
 		switch (method)
 		{
@@ -456,7 +456,7 @@ namespace immagine
 	}
 
 	Image
-		image_crop(const Image & image, const Rectangle& rect)
+	image_crop(const Image & image, const Rectangle& rect)
 	{
 		Image self = image_new(rect.width, rect.height, image.channels);
 
@@ -469,7 +469,7 @@ namespace immagine
 	}
 
 	Image
-		image_pad(const Image& image, uint32_t expand_w, uint32_t expand_h, uint8_t val)
+	image_pad(const Image& image, uint32_t expand_w, uint32_t expand_h, uint8_t val)
 	{
 		Image self = image_new(image.width + 2 * expand_w, image.height + 2 * expand_h, image.channels);
 
@@ -484,7 +484,7 @@ namespace immagine
 	}
 
 	Image
-		image_binarize(const Image& image)
+	image_binarize(const Image& image)
 	{
 		Image self = image_new(image.width, image.height, image.channels);
 
@@ -501,7 +501,7 @@ namespace immagine
 	}
 
 	Image
-		image_connected_component(const Image & image)
+	image_connected_component(const Image & image)
 	{
 		uint32_t*** vec = array3d_new(image.width, image.height, image.channels);
 
@@ -571,8 +571,8 @@ namespace immagine
 		return self;
 	}
 
-	int
-		image_otsu_threshold(const Image & image)
+	std::tuple<int, int, int>
+	image_otsu_threshold(const Image & image)
 	{
 		// calculate histogram
 		int histogram[256] = { 0 };
@@ -589,8 +589,6 @@ namespace immagine
 		// calculate total mean for whole image
 		for (int i = 0; i < 256; i++)
 			total_mean += i * p[i];
-
-
 
 		int optimalTreshold1 = 0, optimalTreshold2 = 0, optimalTreshold3 = 0;
 		double maxBetweenVar = 0;
@@ -643,7 +641,7 @@ namespace immagine
 				}
 			}
 		}
-		return 0;
+		return std::make_tuple(optimalTreshold1, optimalTreshold2, optimalTreshold3);
 	}
 
 	std::vector<std::vector<uint8_t>> clusters(5);
@@ -738,9 +736,6 @@ namespace immagine
 		return 0;
 
 	}
-
-	short x[8] = { 1, 1, 0, -1, -1, -1, 0, 1 };
-	short y[8] = { 0, -1, -1, -1, 0, 1, 1, 1 };
 
 	vector<pair<size_t, size_t>>
 	_get_neightbours(const Image& image, size_t seed_x, size_t seed_y,  uint8_t t)

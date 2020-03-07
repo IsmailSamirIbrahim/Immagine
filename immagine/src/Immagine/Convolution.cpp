@@ -152,5 +152,4 @@ namespace immagine
 
 		return self;
 	}
-
 }

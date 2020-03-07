@@ -124,7 +124,7 @@ namespace immagine
 	IMMAGINE_EXPORT Image
 	image_connected_component(const Image& image);
 
-	IMMAGINE_EXPORT int
+	IMMAGINE_EXPORT std::tuple<int, int, int>
 	image_otsu_threshold(const Image& image);
 
 	IMMAGINE_EXPORT int
