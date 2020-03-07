@@ -129,4 +129,7 @@ namespace immagine
 
 	IMMAGINE_EXPORT int
 	image_kmeans(const Image& image);
+
+	IMMAGINE_EXPORT Image
+	image_region_growing(const Image& image, size_t seed_x, size_t seed_y);
 }
