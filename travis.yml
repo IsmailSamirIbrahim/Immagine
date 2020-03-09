@@ -1,5 +1,5 @@
 travis is too slow, we should use github actions with local runners or local gitlab for that matter!
-language: shell
+language: cpp
 matrix:
   include:
     - name: "Windows VS2017"
