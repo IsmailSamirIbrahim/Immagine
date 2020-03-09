@@ -1,11 +1,13 @@
-dist: trusty
-sudo: false
-language: cpp
-
-script:
-  - cmake --version
-  - mkdir build
-  - cd build
-  - cmake .. -G "Visual Studio 15 Win64"
-  - cmake --build . --config Debug
-  - cmake --build . --config Release
+travis is too slow, we should use github actions with local runners or local gitlab for that matter!
+language: shell
+matrix:
+  include:
+    - name: "Windows VS2017"
+      os: windows
+      script:
+        - cmake --version
+        - mkdir build
+        - cd build
+        - cmake .. -G "Visual Studio 15 Win64"
+        - cmake --build . --config Debug
+        - cmake --build . --config Release
