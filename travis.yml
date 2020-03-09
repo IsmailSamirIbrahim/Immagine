@@ -3,10 +3,9 @@ sudo: false
 language: cpp
 
 script:
-   script:
-         - cmake --version
-         - mkdir build
-         - cd build
-         - cmake .. -G "Visual Studio 15 Win64"
-         - cmake --build . --config Debug
-         - cmake --build . --config Release
+  - cmake --version
+  - mkdir build
+  - cd build
+  - cmake .. -G "Visual Studio 15 Win64"
+  - cmake --build . --config Debug
+  - cmake --build . --config Release
